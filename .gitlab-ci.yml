@@ -11,9 +11,9 @@ before_script:
 test:7.1:
   image: epcallan/php7-testing-phpunit:7.1-phpunit6
   script:
-  - phpunit --coverage-text --colors=never
+  - vendor/bin/phpunit --coverage-text --colors=never
 
 test:7.2:
   image: epcallan/php7-testing-phpunit:7.2-phpunit6
   script:
-  - phpunit --coverage-text --colors=never
+  - vendor/bin/phpunit --coverage-text --colors=never
