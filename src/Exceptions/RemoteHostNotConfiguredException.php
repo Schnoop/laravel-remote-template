@@ -5,11 +5,10 @@ namespace Antwerpes\RemoteView\Exceptions;
 use Exception;
 
 /**
- * Class RemoteTemplateNotFoundException
+ * Class RemoteHostNotConfiguredException
  *
  * @package Antwerpes\RemoteView\Exceptions
  */
-class RemoteTemplateNotFoundException extends Exception
+class RemoteHostNotConfiguredException extends Exception
 {
-
 }

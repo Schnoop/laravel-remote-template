@@ -16,7 +16,7 @@ class Factory extends \Illuminate\View\Factory
      */
     protected function normalizeName($name)
     {
-        $delimiter = 'remote:';
+        $delimiter = $this->container->get('config')->get('remote-view.remote-delimiter');
 
         if (strpos($name, $delimiter) === false) {
             return parent::normalizeName($name);

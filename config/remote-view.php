@@ -2,8 +2,6 @@
 
 return [
 
-    'cache' => true,
-
     'guzzle-config' => [
         'allow_redirects' => false,
         'timeout' => 5,

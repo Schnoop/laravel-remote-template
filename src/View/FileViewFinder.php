@@ -3,6 +3,7 @@
 namespace Antwerpes\RemoteView\View;
 
 use Antwerpes\RemoteView\Exceptions\IgnoredUrlSuffixException;
+use Antwerpes\RemoteView\Exceptions\RemoteHostNotConfiguredException;
 use Antwerpes\RemoteView\Exceptions\RemoteTemplateNotFoundException;
 use Exception;
 use GuzzleHttp\Client;
@@ -12,7 +13,9 @@ use Illuminate\Filesystem\Filesystem;
 use InvalidArgumentException;
 
 /**
- * Class FileViewFinder.
+ * Class FileViewFinder
+ *
+ * @package Antwerpes\RemoteView\View
  */
 class FileViewFinder extends \Illuminate\View\FileViewFinder
 {
@@ -63,8 +66,9 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      * @return string
      * @throws IgnoredUrlSuffixException
      * @throws RemoteTemplateNotFoundException
+     * @throws RemoteHostNotConfiguredException
      */
-    public function find($name)
+    public function find($name): string
     {
         if (isset($this->views[$name])) {
             return $this->views[$name];
@@ -84,7 +88,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      *
      * @return bool
      */
-    protected function hasRemoteInformation($name)
+    protected function hasRemoteInformation($name): bool
     {
         return strpos($name, $this->remotePathDelimiter) === 0
             && strpos($name, $this->remotePathDelimiter) !== false;
@@ -98,25 +102,25 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      * @return string
      * @throws IgnoredUrlSuffixException
      * @throws RemoteTemplateNotFoundException
+     * @throws RemoteHostNotConfiguredException
      */
-    protected function findRemotePathView($name)
+    protected function findRemotePathView($name): string
     {
         $name = trim(str_replace($this->remotePathDelimiter, '', $name));
 
         $namespace = 'default';
         if ($this->hasNamespace($name) === true) {
-            list($namespace, $name) = $this->parseRemoteNamespaceSegments($name);
+            [$namespace, $name] = $this->parseRemoteNamespaceSegments($name);
         }
 
         $remoteHost = $this->getRemoteHost($namespace);
 
         // Check if URL suffix is ignored
         if ($this->urlHasIgnoredSuffix($name, $remoteHost) === true) {
-            throw new IgnoredUrlSuffixException();
+            throw new IgnoredUrlSuffixException('URL # ' . $name . ' has an ignored suffix.');
         }
 
-        $filename = $name;
-        $path = base_path('resources/views/remote/' . $namespace . '/' . str_slug($filename) . '.blade.php');
+        $path = base_path('resources/views/remote/' . $namespace . '/' . str_slug($name) . '.blade.php');
         if ($remoteHost['cache'] === true && $this->files->exists($path) === true) {
             return $path;
         }
@@ -125,7 +129,6 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
         $name = $remoteHost['host'] . $name;
 
         $content = $this->fetchContentFromRemoteHost($name, $remoteHost);
-
         if ($content instanceof Response === true) {
             $content = $content->getBody()->getContents();
         }
@@ -141,10 +144,15 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      * @param string $namespace
      *
      * @return array
+     * @throws RemoteHostNotConfiguredException
      */
-    public function getRemoteHost($namespace)
+    private function getRemoteHost($namespace): array
     {
         $config = $this->config->get('remote-view.hosts');
+        if (isset($config[$namespace]) === false) {
+            throw new RemoteHostNotConfiguredException('No remote host configured for namespace # '
+                . $namespace . '. Please check your remote-view.php config file.');
+        }
         return $config[$namespace];
     }
 
@@ -155,7 +163,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      *
      * @return bool
      */
-    public function hasNamespace($name)
+    private function hasNamespace($name): bool
     {
         try {
             $this->parseRemoteNamespaceSegments($name);
@@ -173,19 +181,16 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      * @return array
      *
      * @throws \InvalidArgumentException
+     * @throws RemoteHostNotConfiguredException
      */
-    protected function parseRemoteNamespaceSegments($name)
+    protected function parseRemoteNamespaceSegments($name): array
     {
         $segments = explode(static::HINT_PATH_DELIMITER, $name);
 
         if (count($segments) !== 2) {
             throw new InvalidArgumentException("View [{$name}] has an invalid name.");
         }
-        $config = $this->config->get('remote-view.hosts');
-        if (!isset($config[$segments[0]])) {
-            throw new InvalidArgumentException("No hint path defined for [{$segments[0]}].");
-        }
-
+        $this->getRemoteHost($segments[0]);
         return $segments;
     }
 
@@ -197,11 +202,16 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      *
      * @return bool
      */
-    private function urlHasIgnoredSuffix($url, $remoteHost)
+    private function urlHasIgnoredSuffix($url, $remoteHost): bool
     {
         $parsedUrl = parse_url($url, PHP_URL_PATH);
         $pathInfo = pathinfo($parsedUrl, PATHINFO_EXTENSION);
-        return in_array($pathInfo, $this->config->get('remote-view.ignore-url-suffix'));
+
+        $ignoreUrlSuffix = $this->config->get('remote-view.ignore-url-suffix');
+        if (isset($remoteHost['ignore-url-suffix']) === true) {
+            $ignoreUrlSuffix = $remoteHost['ignore-url-suffix'];
+        }
+        return in_array($pathInfo, $ignoreUrlSuffix);
     }
 
     /**
@@ -212,7 +222,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      *
      * @return string
      */
-    private function getTemplateUrlForIdentifier($identifier, $remoteHost)
+    private function getTemplateUrlForIdentifier($identifier, $remoteHost): string
     {
         $route = null;
         if (isset($remoteHost['mapping'][$identifier]) === true) {
@@ -228,18 +238,6 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
     }
 
     /**
-     * Returns string for request.
-     *
-     * @param string $glue
-     *
-     * @return string
-     */
-    private function getUserAppendix($glue = '?')
-    {
-
-    }
-
-    /**
      * Fetch content from $url
      *
      * @param string $url
@@ -248,7 +246,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      * @return \GuzzleHttp\Psr7\Response
      * @throws RemoteTemplateNotFoundException
      */
-    private function fetchContentFromRemoteHost($url, $remoteHost)
+    private function fetchContentFromRemoteHost($url, $remoteHost): Response
     {
         $options = [];
         if (isset($remoteHost['request_options']) === true) {
@@ -260,13 +258,13 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
             // Response is a redirect status code.
             if ((int)$res->getStatusCode() > 300 && (int)$res->getStatusCode() < 308) {
                 $location = parse_url($res->getHeader('Location'){0});
-                $remoteContent = parse_url($this->remoteContentHost);
+                $remoteContent = parse_url($remoteHost['host']);
 
                 // Looks like we have a redirect away. So then.... have a pleasant journey.
                 if ($location['host'] !== $remoteContent['host']) {
                     $res = view('partials.redirect')->with('location', $res->getHeader('Location'){0});
                 } else {
-                    $res = $this->fetchContentFromRemoteHost($res->getHeader('Location'){0});
+                    $res = $this->fetchContentFromRemoteHost($res->getHeader('Location'){0}, $remoteHost);
                 }
 
             }

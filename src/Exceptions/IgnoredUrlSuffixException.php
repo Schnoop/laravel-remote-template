@@ -11,7 +11,4 @@ use Exception;
  */
 class IgnoredUrlSuffixException extends Exception
 {
-
-    protected $message = '';
-
 }
