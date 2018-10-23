@@ -10,7 +10,10 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Class FileViewFinder
@@ -90,8 +93,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      */
     protected function hasRemoteInformation($name): bool
     {
-        return strpos($name, $this->remotePathDelimiter) === 0
-            && strpos($name, $this->remotePathDelimiter) !== false;
+        return Str::startsWith($name, $this->remotePathDelimiter);
     }
 
     /**
@@ -106,7 +108,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      */
     protected function findRemotePathView($name): string
     {
-        $name = trim(str_replace($this->remotePathDelimiter, '', $name));
+        $name = trim(Str::replaceFirst($this->remotePathDelimiter, '', $name));
 
         $namespace = 'default';
         if ($this->hasNamespace($name) === true) {
@@ -120,7 +122,12 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
             throw new IgnoredUrlSuffixException('URL # ' . $name . ' has an ignored suffix.');
         }
 
-        $path = base_path('resources/views/remote/' . $namespace . '/' . str_slug($name) . '.blade.php');
+        $path = base_path('resources/views/remote-view-cache/' . $namespace . '/');
+        if (mkdir($path, 0777, true) === false && is_dir($path) === false) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
+        }
+
+        $path = $path . Str::slug($name) . '.blade.php';
         if ($remoteHost['cache'] === true && $this->files->exists($path) === true) {
             return $path;
         }
@@ -186,7 +193,6 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
     protected function parseRemoteNamespaceSegments($name): array
     {
         $segments = explode(static::HINT_PATH_DELIMITER, $name);
-
         if (count($segments) !== 2) {
             throw new InvalidArgumentException("View [{$name}] has an invalid name.");
         }
@@ -211,7 +217,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
         if (isset($remoteHost['ignore-url-suffix']) === true) {
             $ignoreUrlSuffix = $remoteHost['ignore-url-suffix'];
         }
-        return in_array($pathInfo, $ignoreUrlSuffix);
+        return Arr::has($pathInfo, $ignoreUrlSuffix);
     }
 
     /**
@@ -224,12 +230,9 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      */
     private function getTemplateUrlForIdentifier($identifier, $remoteHost): string
     {
-        $route = null;
+        $route = $identifier;
         if (isset($remoteHost['mapping'][$identifier]) === true) {
             $route = $remoteHost['mapping'][$identifier];
-        }
-        if ($route === null) {
-            $route = $identifier;
         }
         if (strpos($route, '/') > 0) {
             return '/' . $route;
@@ -243,7 +246,6 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      * @param string $url
      * @param array $remoteHost
      *
-     * @return \GuzzleHttp\Psr7\Response
      * @throws RemoteTemplateNotFoundException
      */
     private function fetchContentFromRemoteHost($url, $remoteHost): Response
@@ -253,24 +255,9 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
             $options = $remoteHost['request_options'];
         }
         try {
-            $res = $this->client->get($url, $options);
-
-            // Response is a redirect status code.
-            if ((int)$res->getStatusCode() > 300 && (int)$res->getStatusCode() < 308) {
-                $location = parse_url($res->getHeader('Location'){0});
-                $remoteContent = parse_url($remoteHost['host']);
-
-                // Looks like we have a redirect away. So then.... have a pleasant journey.
-                if ($location['host'] !== $remoteContent['host']) {
-                    $res = view('partials.redirect')->with('location', $res->getHeader('Location'){0});
-                } else {
-                    $res = $this->fetchContentFromRemoteHost($res->getHeader('Location'){0}, $remoteHost);
-                }
-
-            }
+            return $this->client->get($url, $options);
         } catch (Exception $e) {
             throw new RemoteTemplateNotFoundException($url, 404);
         }
-        return $res;
     }
 }
