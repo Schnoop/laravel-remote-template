@@ -16,7 +16,7 @@ class Factory extends \Illuminate\View\Factory
      */
     protected function normalizeName($name)
     {
-        $delimiter = FileViewFinder::REMOTE_PATH_DELIMITER;
+        $delimiter = 'remote:';
 
         if (strpos($name, $delimiter) === false) {
             return parent::normalizeName($name);
