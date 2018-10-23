@@ -9,6 +9,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Filesystem\Filesystem;
+use InvalidArgumentException;
 
 /**
  * Class FileViewFinder.
@@ -102,23 +103,28 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
     {
         $name = trim(str_replace($this->remotePathDelimiter, '', $name));
 
+        $namespace = 'default';
+        if ($this->hasNamespace($name) === true) {
+            list($namespace, $name) = $this->parseRemoteNamespaceSegments($name);
+        }
+
+        $remoteHost = $this->getRemoteHost($namespace);
+
         // Check if URL suffix is ignored
-        if ($this->urlHasIgnoredSuffix($name) === true) {
+        if ($this->urlHasIgnoredSuffix($name, $remoteHost) === true) {
             throw new IgnoredUrlSuffixException();
         }
 
         $filename = $name;
-        $path = base_path('resources/views/remote/' . str_slug($filename) . '.blade.php');
-        if ($this->config->get('remote-view.cache') === true
-            && $this->files->exists($path) === true
-        ) {
+        $path = base_path('resources/views/remote/' . $namespace . '/' . str_slug($filename) . '.blade.php');
+        if ($remoteHost['cache'] === true && $this->files->exists($path) === true) {
             return $path;
         }
 
-        $name = $this->getTemplateUrlForIdentifierAndContext($name);
+        $name = $this->getTemplateUrlForIdentifier($name, $remoteHost);
+        $name = $remoteHost['host'] . $name;
 
-        $name = $this->remoteContentHost . $name;
-        $content = $this->fetchContentFromRemoteHost($name);
+        $content = $this->fetchContentFromRemoteHost($name, $remoteHost);
 
         if ($content instanceof Response === true) {
             $content = $content->getBody()->getContents();
@@ -130,13 +136,68 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
     }
 
     /**
-     * Returns true if given url is static.
+     * Return array with remote host conifg.
      *
-     * @param string $url
+     * @param string $namespace
+     *
+     * @return array
+     */
+    public function getRemoteHost($namespace)
+    {
+        $config = $this->config->get('remote-view.hosts');
+        return $config[$namespace];
+    }
+
+    /**
+     * Check for valid namespace.
+     *
+     * @param string $name
      *
      * @return bool
      */
-    private function urlHasIgnoredSuffix($url)
+    public function hasNamespace($name)
+    {
+        try {
+            $this->parseRemoteNamespaceSegments($name);
+        } catch (Exception $e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Get the segments of a template with a named path.
+     *
+     * @param  string $name
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function parseRemoteNamespaceSegments($name)
+    {
+        $segments = explode(static::HINT_PATH_DELIMITER, $name);
+
+        if (count($segments) !== 2) {
+            throw new InvalidArgumentException("View [{$name}] has an invalid name.");
+        }
+        $config = $this->config->get('remote-view.hosts');
+        if (!isset($config[$segments[0]])) {
+            throw new InvalidArgumentException("No hint path defined for [{$segments[0]}].");
+        }
+
+        return $segments;
+    }
+
+    /**
+     * Returns true if given url is static.
+     *
+     * @param string $url
+     * @param array $remoteHost
+     *
+     * @return bool
+     */
+    private function urlHasIgnoredSuffix($url, $remoteHost)
     {
         $parsedUrl = parse_url($url, PHP_URL_PATH);
         $pathInfo = pathinfo($parsedUrl, PATHINFO_EXTENSION);
@@ -147,14 +208,17 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      * Returns remote url for given $identifier
      *
      * @param string $identifier
+     * @param array $remoteHost
      *
      * @return string
      */
-    private function getTemplateUrlForIdentifierAndContext($identifier)
+    private function getTemplateUrlForIdentifier($identifier, $remoteHost)
     {
-        $route = $this->config->get('aral-remote-view.mapping.' . $context . '.' . $identifier);
+        $route = null;
+        if (isset($remoteHost['mapping'][$identifier]) === true) {
+            $route = $remoteHost['mapping'][$identifier];
+        }
         if ($route === null) {
-            // td: TODO: This is an evil fallback. We should remove this one!
             $route = $identifier;
         }
         if (strpos($route, '/') > 0) {
@@ -179,16 +243,16 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      * Fetch content from $url
      *
      * @param string $url
+     * @param array $remoteHost
      *
      * @return \GuzzleHttp\Psr7\Response
      * @throws RemoteTemplateNotFoundException
      */
-    private function fetchContentFromRemoteHost($url)
+    private function fetchContentFromRemoteHost($url, $remoteHost)
     {
         $options = [];
-        $config = $this->config->get('aral.contentHost');
-        if (null !== $config['auth_user'] && null !== $config['auth_password']) {
-            $options = ['auth' => [$config['auth_user'], $config['auth_password'], $config['auth_type']]];
+        if (isset($remoteHost['request_options']) === true) {
+            $options = $remoteHost['request_options'];
         }
         try {
             $res = $this->client->get($url, $options);

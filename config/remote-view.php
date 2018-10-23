@@ -22,6 +22,37 @@ return [
         'ttf',
         'gif',
         'svg'
+    ],
+
+    'hosts' => [
+
+        'default' => [
+
+            'cache' => false,
+            'host' => 'https://www.google.de/',
+            'request_options' => [
+                'auth_user' => '',
+                'auth_password' => '',
+            ],
+            'mapping' => [
+
+            ],
+
+        ],
+
+        'specific' => [
+
+            'cache' => false,
+            'host' => 'https://www.google.com/',
+            'request_options' => [
+                'auth_user' => '',
+                'auth_password' => '',
+            ],
+            'mapping' => [
+
+            ],
+        ]
+
     ]
 
 ];
