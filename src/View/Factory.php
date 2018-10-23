@@ -14,7 +14,7 @@ class Factory extends \Illuminate\View\Factory
      *
      * @return string
      */
-    protected function normalizeName($name)
+    protected function normalizeName($name): string
     {
         $delimiter = $this->container->get('config')->get('remote-view.remote-delimiter');
 

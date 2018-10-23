@@ -13,6 +13,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
 /**
@@ -122,11 +123,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
             throw new IgnoredUrlSuffixException('URL # ' . $name . ' has an ignored suffix.');
         }
 
-        $path = base_path('resources/views/remote-view-cache/' . $namespace . '/');
-        if (mkdir($path, 0777, true) === false && is_dir($path) === false) {
-            throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
-        }
-
+        $path = $this->getViewFolder($namespace);
         $path = $path . Str::slug($name) . '.blade.php';
         if ($remoteHost['cache'] === true && $this->files->exists($path) === true) {
             return $path;
@@ -146,14 +143,32 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
     }
 
     /**
-     * Return array with remote host conifg.
+     * Get folder where fetched views will be stored.
+     *
+     * @param string $namespace
+     *
+     * @return string
+     * @throws RuntimeException
+     */
+    protected function getViewFolder($namespace): string
+    {
+        $path = $this->config->get('remote-view.view-folder');
+        $path .= rtrim($path, '/') . '/' . $namespace . '/';
+        if (mkdir($path, 0777, true) === false && is_dir($path) === false) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
+        }
+        return $path;
+    }
+
+    /**
+     * Return array with remote host config.
      *
      * @param string $namespace
      *
      * @return array
      * @throws RemoteHostNotConfiguredException
      */
-    private function getRemoteHost($namespace): array
+    protected function getRemoteHost($namespace): array
     {
         $config = $this->config->get('remote-view.hosts');
         if (isset($config[$namespace]) === false) {
@@ -170,7 +185,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      *
      * @return bool
      */
-    private function hasNamespace($name): bool
+    protected function hasNamespace($name): bool
     {
         try {
             $this->parseRemoteNamespaceSegments($name);
@@ -208,7 +223,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      *
      * @return bool
      */
-    private function urlHasIgnoredSuffix($url, $remoteHost): bool
+    protected function urlHasIgnoredSuffix($url, $remoteHost): bool
     {
         $parsedUrl = parse_url($url, PHP_URL_PATH);
         $pathInfo = pathinfo($parsedUrl, PATHINFO_EXTENSION);
@@ -228,7 +243,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      *
      * @return string
      */
-    private function getTemplateUrlForIdentifier($identifier, $remoteHost): string
+    protected function getTemplateUrlForIdentifier($identifier, $remoteHost): string
     {
         $route = $identifier;
         if (isset($remoteHost['mapping'][$identifier]) === true) {
@@ -246,9 +261,10 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      * @param string $url
      * @param array $remoteHost
      *
+     * @return ResponseInterface|Response
      * @throws RemoteTemplateNotFoundException
      */
-    private function fetchContentFromRemoteHost($url, $remoteHost): Response
+    protected function fetchContentFromRemoteHost($url, $remoteHost): Response
     {
         $options = [];
         if (isset($remoteHost['request_options']) === true) {
