@@ -10,7 +10,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
@@ -153,9 +152,11 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
     protected function getViewFolder($namespace): string
     {
         $path = $this->config->get('remote-view.view-folder');
-        $path .= rtrim($path, '/') . '/' . $namespace . '/';
-        if (mkdir($path, 0777, true) === false && is_dir($path) === false) {
-            throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
+        $path = rtrim($path, '/') . '/' . $namespace . '/';
+        if (is_dir($path) === false) {
+            if (mkdir($path, 0777, true) === false && is_dir($path) === false) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
+            }
         }
         return $path;
     }
@@ -211,7 +212,6 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
         if (count($segments) !== 2) {
             throw new InvalidArgumentException("View [{$name}] has an invalid name.");
         }
-        $this->getRemoteHost($segments[0]);
         return $segments;
     }
 
@@ -232,7 +232,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
         if (isset($remoteHost['ignore-url-suffix']) === true) {
             $ignoreUrlSuffix = $remoteHost['ignore-url-suffix'];
         }
-        return Arr::has($pathInfo, $ignoreUrlSuffix);
+        return in_array($pathInfo, $ignoreUrlSuffix);
     }
 
     /**

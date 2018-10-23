@@ -12,7 +12,6 @@
          processIsolation="false"
          stopOnError="false"
          stopOnFailure="false"
-         syntaxCheck="true"
          verbose="true"
 >
 
@@ -35,7 +34,7 @@
         <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
         <log type="json" target="build/reports/logfile.json"/>
         <log type="tap" target="build/reports/logfile.tap"/>
-        <log type="junit" target="build/reports/logfile.xml" logIncompleteSkipped="false"/>
+        <log type="junit" target="build/reports/logfile.xml"/>
         <log type="testdox-html" target="build/reports/testdox.html"/>
         <log type="testdox-text" target="build/reports/testdox.txt"/>
     </logging>

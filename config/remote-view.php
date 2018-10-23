@@ -22,7 +22,7 @@ return [
         'svg'
     ],
 
-    'view-folder' => base_path('resources/views/remote-view-cache/' . $namespace . '/'),
+    'view-folder' => base_path('resources/views/remote-view-cache/'),
 
     'hosts' => [
 
