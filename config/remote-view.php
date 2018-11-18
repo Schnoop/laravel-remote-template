@@ -29,7 +29,7 @@ return [
         'default' => [
 
             'cache' => false,
-            'host' => 'https://www.google.de/',
+            'host' => 'https://www.your-first-content-domain.tld',
             'request_options' => [
                 'auth_user' => '',
                 'auth_password' => '',
@@ -43,7 +43,7 @@ return [
         'specific' => [
 
             'cache' => false,
-            'host' => 'https://www.google.com/',
+            'host' => 'https://www.your-second-content-domain.tld',
             'request_options' => [
                 'auth_user' => '',
                 'auth_password' => '',
