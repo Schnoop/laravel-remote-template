@@ -53,7 +53,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
             return $this->views[$name];
         }
 
-        if ($this->remoteView->hasRemoteInformation($name = trim($name))) {
+        if ($this->remoteView->hasRemoteInformation($name = trim($name)) === true) {
             return $this->views[$name] = $this->remoteView->findRemotePathView($name);
         }
 

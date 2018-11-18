@@ -2,7 +2,7 @@
 
 use Antwerpes\RemoteView\Exceptions\IgnoredUrlSuffixException;
 use Antwerpes\RemoteView\Exceptions\RemoteHostNotConfiguredException;
-use Antwerpes\RemoteView\View\FileViewFinder;
+use Antwerpes\RemoteView\View\RemoteViewFinder;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 
@@ -13,7 +13,7 @@ class FileViewFinderTest extends TestCase
 {
 
     /**
-     * @var FileViewFinder
+     * @var RemoteViewFinder
      */
     protected $instance;
 
@@ -40,15 +40,14 @@ class FileViewFinderTest extends TestCase
      */
     public function testNoRemoteDelimiterFound()
     {
-        $this->instance = new FileViewFinder(
+        $this->instance = new RemoteViewFinder(
             $this->getFilesystemMock(),
-            [],
             $this->getConfigMock(),
             m::mock(\GuzzleHttp\Client::class)
         );
 
-        $this->expectException(InvalidArgumentException::class);
-        $this->instance->find('dasLamm');
+        $this->assertFalse($this->instance->hasRemoteInformation('dasLamm'));
+        $this->assertTrue($this->instance->hasRemoteInformation('remote:dasLamm'));
     }
 
     /**
@@ -58,16 +57,15 @@ class FileViewFinderTest extends TestCase
     {
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn([]);
-        $this->instance = new FileViewFinder(
+        $this->instance = new RemoteViewFinder(
             $this->getFilesystemMock(),
-            [],
             $config,
             m::mock(\GuzzleHttp\Client::class)
         );
 
         $this->expectException(RemoteHostNotConfiguredException::class);
         $this->expectExceptionMessage('No remote host configured for namespace # default. Please check your remote-view.php config file.');
-        $this->instance->find('remote:dasLamm');
+        $this->instance->findRemotePathView('remote:dasLamm');
     }
 
     /**
@@ -82,16 +80,15 @@ class FileViewFinderTest extends TestCase
 
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
-        $this->instance = new FileViewFinder(
+        $this->instance = new RemoteViewFinder(
             $this->getFilesystemMock(),
-            [],
             $config,
             m::mock(\GuzzleHttp\Client::class)
         );
 
         $this->expectException(RemoteHostNotConfiguredException::class);
         $this->expectExceptionMessage('No remote host configured for namespace # specific. Please check your remote-view.php config file.');
-        $this->instance->find('remote:specific::dasLamm');
+        $this->instance->findRemotePathView('remote:specific::dasLamm');
     }
 
     /**
@@ -111,16 +108,15 @@ class FileViewFinderTest extends TestCase
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
         $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn($ignoreFileList);
-        $this->instance = new FileViewFinder(
+        $this->instance = new RemoteViewFinder(
             $this->getFilesystemMock(),
-            [],
             $config,
             m::mock(\GuzzleHttp\Client::class)
         );
 
         $this->expectException(IgnoredUrlSuffixException::class);
         $this->expectExceptionMessage('URL # dasLamm.svg has an ignored suffix.');
-        $this->instance->find('remote:dasLamm.svg');
+        $this->instance->findRemotePathView('remote:dasLamm.svg');
     }
 
     /**
@@ -143,16 +139,15 @@ class FileViewFinderTest extends TestCase
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
         $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn($ignoreFileList);
-        $this->instance = new FileViewFinder(
+        $this->instance = new RemoteViewFinder(
             $this->getFilesystemMock(),
-            [],
             $config,
             m::mock(\GuzzleHttp\Client::class)
         );
 
         $this->expectException(IgnoredUrlSuffixException::class);
         $this->expectExceptionMessage('URL # dasLamm.svg has an ignored suffix.');
-        $this->instance->find('remote:dasLamm.svg');
+        $this->instance->findRemotePathView('remote:dasLamm.svg');
     }
 
     /**
@@ -174,14 +169,13 @@ class FileViewFinderTest extends TestCase
         $fileSystemMock = $this->getFilesystemMock();
         $fileSystemMock->shouldReceive('exists')->with('tests/default/daslamm.blade.php')->andReturn(true);
 
-        $this->instance = new FileViewFinder(
+        $this->instance = new RemoteViewFinder(
             $fileSystemMock,
-            [],
             $config,
             m::mock(\GuzzleHttp\Client::class)
         );
 
-        $this->assertEquals('tests/default/daslamm.blade.php', $this->instance->find('remote:dasLamm'));
+        $this->assertEquals('tests/default/daslamm.blade.php', $this->instance->findRemotePathView('remote:dasLamm'));
     }
 
     /**
@@ -203,13 +197,12 @@ class FileViewFinderTest extends TestCase
         $fileSystemMock = $this->getFilesystemMock();
         $fileSystemMock->shouldReceive('exists')->with('tests/specific/daslamm.blade.php')->andReturn(true);
 
-        $this->instance = new FileViewFinder(
+        $this->instance = new RemoteViewFinder(
             $fileSystemMock,
-            [],
             $config,
             m::mock(\GuzzleHttp\Client::class)
         );
 
-        $this->assertEquals('tests/specific/daslamm.blade.php', $this->instance->find('remote:specific::dasLamm'));
+        $this->assertEquals('tests/specific/daslamm.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));
     }
 }
