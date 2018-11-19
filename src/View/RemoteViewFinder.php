@@ -203,26 +203,6 @@ class RemoteViewFinder
     }
 
     /**
-     * Get folder where fetched views will be stored.
-     *
-     * @param string $namespace
-     *
-     * @return string
-     * @throws RuntimeException
-     */
-    protected function getViewFolder($namespace): string
-    {
-        $path = $this->config->get('remote-view.view-folder');
-        $path = rtrim($path, '/') . '/' . $namespace . '/';
-        if (is_dir($path) === false) {
-            if (!mkdir($path, 0777, true) && !is_dir($path)) {
-                throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
-            }
-        }
-        return $path;
-    }
-
-    /**
      * Returns remote url for given $identifier
      *
      * @param string $identifier
@@ -240,6 +220,43 @@ class RemoteViewFinder
             return '/' . $route;
         }
         return $route;
+    }
+
+    /**
+     * Call callback that will be called after template url has been set.
+     *
+     * @param string $url
+     *
+     * @return string
+     */
+    protected function callModifyTemplateUrlCallback(string $url)
+    {
+        if ($this->templateUrlCallback !== null
+            && is_callable($this->templateUrlCallback) === true
+        ) {
+            return call_user_func($this->templateUrlCallback, $url);
+        }
+        return $url;
+    }
+
+    /**
+     * Get folder where fetched views will be stored.
+     *
+     * @param string $namespace
+     *
+     * @return string
+     * @throws RuntimeException
+     */
+    protected function getViewFolder($namespace): string
+    {
+        $path = $this->config->get('remote-view.view-folder');
+        $path = rtrim($path, '/') . '/' . $namespace . '/';
+        if (is_dir($path) === false) {
+            if (!mkdir($path, 0777, true) && !is_dir($path)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
+            }
+        }
+        return $path;
     }
 
     /**
@@ -306,20 +323,4 @@ class RemoteViewFinder
         $this->templateUrlCallback = $callback;
     }
 
-    /**
-     * Call callback that will be called after template url has been set.
-     *
-     * @param string $url
-     *
-     * @return string
-     */
-    protected function callModifyTemplateUrlCallback(string $url)
-    {
-        if ($this->templateUrlCallback !== null
-            && is_callable($this->templateUrlCallback) === true
-        ) {
-            return call_user_func($this->templateUrlCallback, $url);
-        }
-        return $url;
-    }
 }
