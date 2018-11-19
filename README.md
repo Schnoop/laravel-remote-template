@@ -20,7 +20,7 @@ At first you have to add the custom composer repository to your projects compose
 Require this package with composer.
 
 ```shell
-composer require antwerpes/laravel-remote-view
+composer require antwerpes/laravel-remote-template
 ```
 
 Laravel 5.5 uses Package Auto-Discovery, so doesn't require you to manually add the ServiceProvider. 
