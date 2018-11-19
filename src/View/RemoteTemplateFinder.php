@@ -116,7 +116,7 @@ class RemoteTemplateFinder
             return $path;
         }
 
-        $url = $remoteHost['host'] . $url;
+        $url = rtrim($remoteHost['host'], '/') . '/' . ltrim($url, '/');
 
         $content = $this->fetchContentFromRemoteHost($url, $remoteHost);
         if ($content instanceof Response === true) {
