@@ -1,21 +1,21 @@
 <?php
 
-namespace Antwerpes\RemoteView\View;
+namespace Antwerpes\RemoteBlade\View;
 
-use Antwerpes\RemoteView\Exceptions\IgnoredUrlSuffixException;
-use Antwerpes\RemoteView\Exceptions\RemoteHostNotConfiguredException;
-use Antwerpes\RemoteView\Exceptions\RemoteTemplateNotFoundException;
+use Antwerpes\RemoteBlade\Exceptions\IgnoredUrlSuffixException;
+use Antwerpes\RemoteBlade\Exceptions\RemoteHostNotConfiguredException;
+use Antwerpes\RemoteBlade\Exceptions\RemoteTemplateNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 
 /**
  * Class FileViewFinder
  *
- * @package Antwerpes\RemoteView\View
+ * @package Antwerpes\RemoteBlade\View
  */
 class FileViewFinder extends \Illuminate\View\FileViewFinder
 {
     /**
-     * @var RemoteViewFinder
+     * @var RemoteBladeFinder
      */
     private $remoteView;
 
@@ -24,13 +24,13 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      *
      * @param \Illuminate\Filesystem\Filesystem $files
      * @param array $paths
-     * @param RemoteViewFinder $remoteView
+     * @param RemoteBladeFinder $remoteView
      * @param array $extensions
      */
     public function __construct(
         Filesystem $files,
         array $paths,
-        RemoteViewFinder $remoteView,
+        RemoteBladeFinder $remoteView,
         array $extensions = null
     ) {
         parent::__construct($files, $paths, $extensions);

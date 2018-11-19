@@ -1,13 +1,13 @@
 <?php
 
-namespace Antwerpes\RemoteView\Exceptions;
+namespace Antwerpes\RemoteBlade\Exceptions;
 
 use Exception;
 
 /**
  * Class RemoteTemplateNotFoundException
  *
- * @package Antwerpes\RemoteView\Exceptions
+ * @package Antwerpes\RemoteBlade\Exceptions
  */
 class RemoteTemplateNotFoundException extends Exception
 {

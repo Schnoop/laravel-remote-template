@@ -1,10 +1,10 @@
 <?php
 
-namespace Antwerpes\RemoteView\View;
+namespace Antwerpes\RemoteBlade\View;
 
-use Antwerpes\RemoteView\Exceptions\IgnoredUrlSuffixException;
-use Antwerpes\RemoteView\Exceptions\RemoteHostNotConfiguredException;
-use Antwerpes\RemoteView\Exceptions\RemoteTemplateNotFoundException;
+use Antwerpes\RemoteBlade\Exceptions\IgnoredUrlSuffixException;
+use Antwerpes\RemoteBlade\Exceptions\RemoteHostNotConfiguredException;
+use Antwerpes\RemoteBlade\Exceptions\RemoteTemplateNotFoundException;
 use Closure;
 use Exception;
 use GuzzleHttp\Client;
@@ -17,11 +17,11 @@ use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
 /**
- * Class RemoteViewFinder
+ * Class RemoteBladeFinder
  *
- * @package Antwerpes\RemoteView\View
+ * @package Antwerpes\RemoteBlade\View
  */
-class RemoteViewFinder
+class RemoteBladeFinder
 {
 
     /**

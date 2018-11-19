@@ -1,8 +1,8 @@
 <?php
 
-use Antwerpes\RemoteView\Exceptions\IgnoredUrlSuffixException;
-use Antwerpes\RemoteView\Exceptions\RemoteHostNotConfiguredException;
-use Antwerpes\RemoteView\View\RemoteViewFinder;
+use Antwerpes\RemoteBlade\Exceptions\IgnoredUrlSuffixException;
+use Antwerpes\RemoteBlade\Exceptions\RemoteHostNotConfiguredException;
+use Antwerpes\RemoteBlade\View\RemoteBladeFinder;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 
@@ -13,7 +13,7 @@ class FileViewFinderTest extends TestCase
 {
 
     /**
-     * @var RemoteViewFinder
+     * @var RemoteBladeFinder
      */
     protected $instance;
 
@@ -40,7 +40,7 @@ class FileViewFinderTest extends TestCase
      */
     public function testNoRemoteDelimiterFound()
     {
-        $this->instance = new RemoteViewFinder(
+        $this->instance = new RemoteBladeFinder(
             $this->getFilesystemMock(),
             $this->getConfigMock(),
             m::mock(\GuzzleHttp\Client::class)
@@ -57,7 +57,7 @@ class FileViewFinderTest extends TestCase
     {
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn([]);
-        $this->instance = new RemoteViewFinder(
+        $this->instance = new RemoteBladeFinder(
             $this->getFilesystemMock(),
             $config,
             m::mock(\GuzzleHttp\Client::class)
@@ -80,7 +80,7 @@ class FileViewFinderTest extends TestCase
 
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
-        $this->instance = new RemoteViewFinder(
+        $this->instance = new RemoteBladeFinder(
             $this->getFilesystemMock(),
             $config,
             m::mock(\GuzzleHttp\Client::class)
@@ -108,7 +108,7 @@ class FileViewFinderTest extends TestCase
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
         $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn($ignoreFileList);
-        $this->instance = new RemoteViewFinder(
+        $this->instance = new RemoteBladeFinder(
             $this->getFilesystemMock(),
             $config,
             m::mock(\GuzzleHttp\Client::class)
@@ -139,7 +139,7 @@ class FileViewFinderTest extends TestCase
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
         $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn($ignoreFileList);
-        $this->instance = new RemoteViewFinder(
+        $this->instance = new RemoteBladeFinder(
             $this->getFilesystemMock(),
             $config,
             m::mock(\GuzzleHttp\Client::class)
@@ -169,7 +169,7 @@ class FileViewFinderTest extends TestCase
         $fileSystemMock = $this->getFilesystemMock();
         $fileSystemMock->shouldReceive('exists')->with('tests/default/daslamm.blade.php')->andReturn(true);
 
-        $this->instance = new RemoteViewFinder(
+        $this->instance = new RemoteBladeFinder(
             $fileSystemMock,
             $config,
             m::mock(\GuzzleHttp\Client::class)
@@ -197,7 +197,7 @@ class FileViewFinderTest extends TestCase
         $fileSystemMock = $this->getFilesystemMock();
         $fileSystemMock->shouldReceive('exists')->with('tests/specific/daslamm.blade.php')->andReturn(true);
 
-        $this->instance = new RemoteViewFinder(
+        $this->instance = new RemoteBladeFinder(
             $fileSystemMock,
             $config,
             m::mock(\GuzzleHttp\Client::class)
