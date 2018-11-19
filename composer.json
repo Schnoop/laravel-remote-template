@@ -1,7 +1,7 @@
 {
-  "name": "antwerpes/laravel-remote-view",
+  "name": "antwerpes/laravel-remote-template",
   "type": "library",
-  "description": "A Laravel package to fetch blade templates from a remote URL.",
+  "description": "A Laravel package to fetch templates from a remote URL.",
   "keywords": [],
   "homepage": "http://www.antwerpes.de",
   "license": "proprietary",
@@ -22,12 +22,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Antwerpes\\RemoteView\\": "src/"
+      "Antwerpes\\RemoteTemplate\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Antwerpes\\RemoteView\\Tests\\": "tests/"
+      "Antwerpes\\RemoteTemplate\\Tests\\": "tests/"
     }
   },
   "config": {
@@ -41,7 +41,7 @@
     },
     "laravel": {
       "providers": [
-        "Antwerpes\\RemoteView\\RemoteViewServiceProvider"
+        "Antwerpes\\RemoteTemplate\\RemoteTemplateServiceProvider"
       ]
     }
   }

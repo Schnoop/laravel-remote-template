@@ -1,6 +1,6 @@
 <?php
 
-namespace Antwerpes\RemoteBlade\View;
+namespace Antwerpes\RemoteTemplate\View;
 
 /**
  * Class Factory.

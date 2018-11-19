@@ -1,19 +1,19 @@
 <?php
 
-namespace Antwerpes\RemoteBlade;
+namespace Antwerpes\RemoteTemplate;
 
-use Antwerpes\RemoteBlade\View\Factory;
-use Antwerpes\RemoteBlade\View\FileViewFinder;
-use Antwerpes\RemoteBlade\View\RemoteBladeFinder;
+use Antwerpes\RemoteTemplate\View\Factory;
+use Antwerpes\RemoteTemplate\View\FileViewFinder;
+use Antwerpes\RemoteTemplate\View\RemoteTemplateFinder;
 use GuzzleHttp\Client;
 use Illuminate\View\ViewServiceProvider;
 
 /**
- * Class RemoteBladeServiceProvider
+ * Class RemoteTemplateServiceProvider
  *
- * @package Antwerpes\RemoteBlade
+ * @package Antwerpes\RemoteTemplate
  */
-class RemoteBladeServiceProvider extends ViewServiceProvider
+class RemoteTemplateServiceProvider extends ViewServiceProvider
 {
 
     /**
@@ -38,7 +38,7 @@ class RemoteBladeServiceProvider extends ViewServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/remote-view.php', 'remote-view');
 
         $this->app->singleton('remoteview.finder', function ($app) {
-            return new RemoteBladeFinder(
+            return new RemoteTemplateFinder(
                 $app['files'],
                 $app['config'],
                 new Client($app['config']['remote-view.guzzle-config'])
