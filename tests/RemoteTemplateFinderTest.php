@@ -363,9 +363,9 @@ class RemoteTemplateFinderTest extends TestCase
     }
 
     /**
-     * @group Test
+     *
      */
-    public function testDing()
+    public function testRequestWithAdditionalOptions()
     {
         $hosts = [
             'specific' => [
@@ -401,6 +401,147 @@ class RemoteTemplateFinderTest extends TestCase
             $config,
             $clientMock
         );
+
+        $this->assertEquals('tests/specific/daslamm.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));
+    }
+
+
+    /**
+     *
+     */
+    public function testWithModifyTemplateUrlCallback()
+    {
+        $hosts = [
+            'specific' => [
+                'cache' => false,
+                'host' => 'http://foo.bar',
+                'request_options' => [
+                    'auth_user' => 't',
+                    'auth_password' => '',
+                ],
+            ],
+        ];
+
+        $config = $this->getConfigMock();
+        $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
+        $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
+
+        $responseMock = m::mock(\GuzzleHttp\Psr7\Response::class);
+        $responseMock->shouldReceive('getStatusCode')->andReturn(200);
+        $responseMock->shouldReceive('getBody->getContents')->andReturn('MyContent');
+
+        $fileSystemMock = $this->getFilesystemMock();
+        $fileSystemMock->shouldReceive('exists')->with('tests/specific/daslamm.blade.php')->andReturn(true);
+        $fileSystemMock->shouldReceive('put')->with('tests/specific/hurz.blade.php', 'MyContent');
+
+
+        $clientMock = m::mock(\GuzzleHttp\Client::class);
+        $clientMock->shouldReceive('get')->with('http://foo.bar/hurz', ['auth_user' => 't', 'auth_password' => '', 'http_errors' => false])
+            ->andReturn($responseMock);
+
+        $this->instance = new RemoteTemplateFinder(
+            $fileSystemMock,
+            $config,
+            $clientMock
+        );
+        $this->instance->setModifyTemplateUrlCallback(function($url) {
+            return 'hurz';
+        });
+
+        $this->assertEquals('tests/specific/hurz.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));
+    }
+
+
+    /**
+     *
+     */
+    public function testWithResponseHandler()
+    {
+        $hosts = [
+            'specific' => [
+                'cache' => false,
+                'host' => 'http://foo.bar',
+                'request_options' => [
+                    'auth_user' => 't',
+                    'auth_password' => '',
+                ],
+            ],
+        ];
+
+        $config = $this->getConfigMock();
+        $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
+        $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
+
+        $responseMock = m::mock(\GuzzleHttp\Psr7\Response::class);
+        $responseMock->shouldReceive('getStatusCode')->andReturn(404);
+        $responseMock->shouldReceive('getBody->getContents')->andReturn('MyContent');
+
+        $fileSystemMock = $this->getFilesystemMock();
+        $fileSystemMock->shouldReceive('exists')->with('tests/specific/daslamm.blade.php')->andReturn(true);
+        $fileSystemMock->shouldReceive('put')->with('tests/specific/daslamm.blade.php', 'Blubb');
+
+
+        $clientMock = m::mock(\GuzzleHttp\Client::class);
+        $clientMock->shouldReceive('get')->with('http://foo.bar/dasLamm', ['auth_user' => 't', 'auth_password' => '', 'http_errors' => false])
+            ->andReturn($responseMock);
+
+        $this->instance = new RemoteTemplateFinder(
+            $fileSystemMock,
+            $config,
+            $clientMock
+        );
+        $this->instance->pushResponseHandler(404, function() {
+            return 'Blubb';
+        });
+
+        $this->assertEquals('tests/specific/daslamm.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));
+    }
+
+
+    /**
+     *
+     */
+    public function testWithResponseHandlersArray()
+    {
+        $hosts = [
+            'specific' => [
+                'cache' => false,
+                'host' => 'http://foo.bar',
+                'request_options' => [
+                    'auth_user' => 't',
+                    'auth_password' => '',
+                ],
+            ],
+        ];
+
+        $config = $this->getConfigMock();
+        $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
+        $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
+
+        $responseMock = m::mock(\GuzzleHttp\Psr7\Response::class);
+        $responseMock->shouldReceive('getStatusCode')->andReturn(405);
+        $responseMock->shouldReceive('getBody->getContents')->andReturn('MyContent');
+
+        $fileSystemMock = $this->getFilesystemMock();
+        $fileSystemMock->shouldReceive('exists')->with('tests/specific/daslamm.blade.php')->andReturn(true);
+        $fileSystemMock->shouldReceive('put')->with('tests/specific/daslamm.blade.php', 'Blubb');
+
+
+        $clientMock = m::mock(\GuzzleHttp\Client::class);
+        $clientMock->shouldReceive('get')->with('http://foo.bar/dasLamm', ['auth_user' => 't', 'auth_password' => '', 'http_errors' => false])
+            ->andReturn($responseMock);
+
+        $this->instance = new RemoteTemplateFinder(
+            $fileSystemMock,
+            $config,
+            $clientMock
+        );
+        $this->instance->pushResponseHandler([405], function() {
+            return 'Blubb';
+        });
 
         $this->assertEquals('tests/specific/daslamm.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));
     }
