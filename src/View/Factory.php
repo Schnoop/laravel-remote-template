@@ -2,6 +2,8 @@
 
 namespace Antwerpes\RemoteTemplate\View;
 
+use Illuminate\Support\Str;
+
 /**
  * Class Factory.
  */
@@ -18,7 +20,7 @@ class Factory extends \Illuminate\View\Factory
     {
         $delimiter = $this->container->get('config')->get('remote-view.remote-delimiter');
 
-        if (strpos($name, $delimiter) === false) {
+        if (Str::startsWith($name, $delimiter) === false) {
             return parent::normalizeName($name);
         }
 

@@ -285,12 +285,12 @@ class RemoteTemplateFinder
     /**
      * Call handler if any defined
      *
-     * @param ResponseInterface $result
+     * @param ResponseInterface|\Illuminate\Http\Response $result
      * @param array $remoteHost
      *
-     * @return ResponseInterface
+     * @return ResponseInterface|\Illuminate\Http\Response|\GuzzleHttp\Psr7\Response
      */
-    protected function callResponseHandler(ResponseInterface $result, array $remoteHost)
+    protected function callResponseHandler($result, array $remoteHost)
     {
         if (isset($this->handler[$result->getStatusCode()]) === true
             && is_callable($this->handler[$result->getStatusCode()]) === true
