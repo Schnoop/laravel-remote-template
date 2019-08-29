@@ -22,6 +22,11 @@ return [
         'svg'
     ],
 
+    'ignore-urls' => [
+        'typo3',
+        'typo3/',
+    ],
+
     'view-folder' => base_path('resources/views/remote-view-cache/'),
 
     'hosts' => [

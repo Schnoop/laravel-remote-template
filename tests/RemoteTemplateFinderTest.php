@@ -2,6 +2,7 @@
 
 use Antwerpes\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
 use Antwerpes\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
+use Antwerpes\RemoteTemplate\Exceptions\UrlIsForbiddenException;
 use Antwerpes\RemoteTemplate\View\RemoteTemplateFinder;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
@@ -164,6 +165,7 @@ class RemoteTemplateFinderTest extends TestCase
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
         $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn([]);
         $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
 
         $fileSystemMock = $this->getFilesystemMock();
@@ -192,6 +194,7 @@ class RemoteTemplateFinderTest extends TestCase
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
         $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn([]);
         $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
 
         $fileSystemMock = $this->getFilesystemMock();
@@ -221,6 +224,7 @@ class RemoteTemplateFinderTest extends TestCase
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
         $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn([]);
         $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
 
         $responseMock = m::mock(\Psr\Http\Message\ResponseInterface::class);
@@ -259,6 +263,7 @@ class RemoteTemplateFinderTest extends TestCase
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
         $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn([]);
         $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
 
         $responseMock = m::mock(\Illuminate\Http\Response::class);
@@ -298,6 +303,7 @@ class RemoteTemplateFinderTest extends TestCase
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
         $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn([]);
         $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
 
         $responseMock = m::mock(\GuzzleHttp\Psr7\Response::class);
@@ -337,6 +343,7 @@ class RemoteTemplateFinderTest extends TestCase
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
         $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn([]);
         $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
 
         $responseMock = m::mock(\GuzzleHttp\Psr7\Response::class);
@@ -381,6 +388,7 @@ class RemoteTemplateFinderTest extends TestCase
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
         $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn([]);
         $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
 
         $responseMock = m::mock(\GuzzleHttp\Psr7\Response::class);
@@ -425,6 +433,7 @@ class RemoteTemplateFinderTest extends TestCase
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
         $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn([]);
         $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
 
         $responseMock = m::mock(\GuzzleHttp\Psr7\Response::class);
@@ -445,7 +454,7 @@ class RemoteTemplateFinderTest extends TestCase
             $config,
             $clientMock
         );
-        $this->instance->setModifyTemplateUrlCallback(function($url) {
+        $this->instance->setModifyTemplateUrlCallback(function ($url) {
             return 'hurz';
         });
 
@@ -472,6 +481,7 @@ class RemoteTemplateFinderTest extends TestCase
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
         $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn([]);
         $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
 
         $responseMock = m::mock(\GuzzleHttp\Psr7\Response::class);
@@ -492,7 +502,7 @@ class RemoteTemplateFinderTest extends TestCase
             $config,
             $clientMock
         );
-        $this->instance->pushResponseHandler(404, function() {
+        $this->instance->pushResponseHandler(404, function () {
             return 'Blubb';
         });
 
@@ -519,6 +529,7 @@ class RemoteTemplateFinderTest extends TestCase
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
         $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn([]);
         $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
 
         $responseMock = m::mock(\GuzzleHttp\Psr7\Response::class);
@@ -539,10 +550,57 @@ class RemoteTemplateFinderTest extends TestCase
             $config,
             $clientMock
         );
-        $this->instance->pushResponseHandler([405], function() {
+        $this->instance->pushResponseHandler([405], function () {
             return 'Blubb';
         });
 
         $this->assertEquals('tests/specific/daslamm.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));
+    }
+
+
+    /**
+     *
+     */
+    public function testUrlIsOnHostForbiddenList()
+    {
+        $hosts = [
+            'default' => [
+                'ignore-urls' => [
+                    'typo3'
+                ]
+            ],
+        ];
+
+        $ignoreFileList = [
+            'typo3',
+            'typo3/',
+            '/typo3/',
+            '/typo3',
+            '/typo3/index.php',
+            'typo3/index.php',
+        ];
+
+        $responseMock = m::mock(\GuzzleHttp\Psr7\Response::class);
+        $responseMock->shouldReceive('getStatusCode')->andReturn(405);
+        $responseMock->shouldReceive('getBody->getContents')->andReturn('MyContent');
+
+
+        $clientMock = m::mock(\GuzzleHttp\Client::class);
+        $clientMock->shouldReceive('get')->with('http://foo.bar/typo3', ['auth_user' => 't', 'auth_password' => '', 'http_errors' => false])
+            ->andReturn($responseMock);
+
+        $config = $this->getConfigMock();
+        $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
+        $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn($ignoreFileList);
+        $this->instance = new RemoteTemplateFinder(
+            $this->getFilesystemMock(),
+            $config,
+            $clientMock
+        );
+
+        $this->expectException(UrlIsForbiddenException::class);
+        $this->expectExceptionMessage('URL # typo3/index.php is forbidden.');
+        $this->instance->findRemotePathView('remote:typo3/index.php');
     }
 }

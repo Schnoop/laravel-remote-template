@@ -5,6 +5,7 @@ namespace Antwerpes\RemoteTemplate\View;
 use Antwerpes\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
 use Antwerpes\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
 use Antwerpes\RemoteTemplate\Exceptions\RemoteTemplateNotFoundException;
+use Antwerpes\RemoteTemplate\Exceptions\UrlIsForbiddenException;
 use Closure;
 use Exception;
 use GuzzleHttp\Client;
@@ -90,6 +91,7 @@ class RemoteTemplateFinder
      * @throws IgnoredUrlSuffixException
      * @throws RemoteTemplateNotFoundException
      * @throws RemoteHostNotConfiguredException
+     * @throws UrlIsForbiddenException
      */
     public function findRemotePathView($name): string
     {
@@ -105,6 +107,11 @@ class RemoteTemplateFinder
         // Check if URL suffix is ignored
         if ($this->urlHasIgnoredSuffix($name, $remoteHost) === true) {
             throw new IgnoredUrlSuffixException('URL # ' . $name . ' has an ignored suffix.');
+        }
+
+        // Check if URL is forbidden.
+        if ($this->isForbiddenUrl($name, $remoteHost) === true) {
+            throw new UrlIsForbiddenException('URL # ' . $name . ' is forbidden.', 404);
         }
 
         $url = $this->getTemplateUrlForIdentifier($name, $remoteHost);
@@ -130,6 +137,26 @@ class RemoteTemplateFinder
     }
 
     /**
+     * Returns true if given url is forbidden.
+     *
+     * @param string $url
+     * @param array $remoteHost
+     *
+     * @return bool
+     */
+    private function isForbiddenUrl($url, $remoteHost): bool
+    {
+        $ignoreUrlSuffix = $this->config->get('remote-view.ignore-urls');
+        if (isset($remoteHost['ignore-urls']) === true) {
+            $ignoreUrlSuffix = $remoteHost['ignore-urls'];
+        }
+
+        $parsedUrl = parse_url($url, PHP_URL_PATH);
+        return in_array(pathinfo($parsedUrl, PATHINFO_DIRNAME), $ignoreUrlSuffix)
+            || in_array(pathinfo($parsedUrl, PATHINFO_BASENAME), $ignoreUrlSuffix);
+    }
+
+    /**
      * Check for valid namespace.
      *
      * @param string $name
@@ -149,7 +176,7 @@ class RemoteTemplateFinder
     /**
      * Get the segments of a template with a named path.
      *
-     * @param  string $name
+     * @param string $name
      *
      * @return array
      *
