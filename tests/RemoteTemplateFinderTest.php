@@ -561,7 +561,7 @@ class RemoteTemplateFinderTest extends TestCase
     /**
      *
      */
-    public function testUrlIsOnHostForbiddenList()
+    public function testUrlIsOnDefaultHostForbiddenList()
     {
         $hosts = [
             'default' => [
@@ -571,36 +571,54 @@ class RemoteTemplateFinderTest extends TestCase
             ],
         ];
 
-        $ignoreFileList = [
-            'typo3',
-            'typo3/',
-            '/typo3/',
-            '/typo3',
-            '/typo3/index.php',
-            'typo3/index.php',
+        $ignoreUrlList = [
+            //'/typo3/index.php',
+            //'typo3',
         ];
-
-        $responseMock = m::mock(\GuzzleHttp\Psr7\Response::class);
-        $responseMock->shouldReceive('getStatusCode')->andReturn(405);
-        $responseMock->shouldReceive('getBody->getContents')->andReturn('MyContent');
-
-
-        $clientMock = m::mock(\GuzzleHttp\Client::class);
-        $clientMock->shouldReceive('get')->with('http://foo.bar/typo3', ['auth_user' => 't', 'auth_password' => '', 'http_errors' => false])
-            ->andReturn($responseMock);
 
         $config = $this->getConfigMock();
         $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
         $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
-        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn($ignoreFileList);
+        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn($ignoreUrlList);
         $this->instance = new RemoteTemplateFinder(
             $this->getFilesystemMock(),
             $config,
-            $clientMock
+            m::mock(\GuzzleHttp\Client::class)
         );
 
         $this->expectException(UrlIsForbiddenException::class);
-        $this->expectExceptionMessage('URL # typo3/index.php is forbidden.');
-        $this->instance->findRemotePathView('remote:typo3/index.php');
+        $this->expectExceptionMessage('URL # typo3/ is forbidden.');
+        $this->instance->findRemotePathView('remote:typo3/');
+    }
+
+    /**
+     *
+     */
+    public function testUrlIsOnGeneralHostForbiddenList()
+    {
+        $hosts = [
+            'default' => [
+                'ignore-urls' => [
+                ]
+            ],
+        ];
+
+        $ignoreUrlList = [
+            'typo3',
+        ];
+
+        $config = $this->getConfigMock();
+        $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
+        $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn($ignoreUrlList);
+        $this->instance = new RemoteTemplateFinder(
+            $this->getFilesystemMock(),
+            $config,
+            m::mock(\GuzzleHttp\Client::class)
+        );
+
+        $this->expectException(UrlIsForbiddenException::class);
+        $this->expectExceptionMessage('URL # typo3 is forbidden.');
+        $this->instance->findRemotePathView('remote:typo3');
     }
 }

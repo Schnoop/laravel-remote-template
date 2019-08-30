@@ -5,6 +5,7 @@ namespace Antwerpes\RemoteTemplate\View;
 use Antwerpes\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
 use Antwerpes\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
 use Antwerpes\RemoteTemplate\Exceptions\RemoteTemplateNotFoundException;
+use Antwerpes\RemoteTemplate\Exceptions\UrlIsForbiddenException;
 use Illuminate\Filesystem\Filesystem;
 
 /**
@@ -22,7 +23,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
     /**
      * Create a new file view loader instance.
      *
-     * @param \Illuminate\Filesystem\Filesystem $files
+     * @param Filesystem $files
      * @param array $paths
      * @param RemoteTemplateFinder $remoteView
      * @param array $extensions
@@ -46,6 +47,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      * @throws IgnoredUrlSuffixException
      * @throws RemoteTemplateNotFoundException
      * @throws RemoteHostNotConfiguredException
+     * @throws UrlIsForbiddenException
      */
     public function find($name): string
     {

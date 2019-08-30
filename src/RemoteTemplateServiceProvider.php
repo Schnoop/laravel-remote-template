@@ -6,6 +6,9 @@ use Antwerpes\RemoteTemplate\View\Factory;
 use Antwerpes\RemoteTemplate\View\FileViewFinder;
 use Antwerpes\RemoteTemplate\View\RemoteTemplateFinder;
 use GuzzleHttp\Client;
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\View\Engines\EngineResolver;
+use Illuminate\View\ViewFinderInterface;
 use Illuminate\View\ViewServiceProvider;
 
 /**
@@ -58,9 +61,9 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
     /**
      * Create a new Factory Instance.
      *
-     * @param  \Illuminate\View\Engines\EngineResolver $resolver
-     * @param  \Illuminate\View\ViewFinderInterface $finder
-     * @param  \Illuminate\Contracts\Events\Dispatcher $events
+     * @param  EngineResolver $resolver
+     * @param  ViewFinderInterface $finder
+     * @param  Dispatcher $events
      *
      * @return Factory
      */
