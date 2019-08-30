@@ -5,32 +5,10 @@
 
 ## Installation 
 
-First, add our custom composer repository to your `composer.js`:
-
-At first you have to add the custom composer repository to your projects composer.json:
-
-```json
-{
-  "repositories": [{
-    "type": "composer",
-    "url": "http://aral-satis.dev71.antwerpes.de/"
-  }]
-}
-```
-
-Until we have HTTPS support, you will also have to add the following line to your configuration:
-
-```
-"config": {
-  ...
-  "secure-http": false
-}
-```
-
-Afterwards, you can simply install the package with composer:
+Simply install the package with composer:
 
 ```shell
-composer require antwerpes/laravel-remote-template
+composer require schnoop/laravel-remote-template
 ```
 
 If you are using an older version of Laravel (< 5.5), you will also need to add our service provider
@@ -39,14 +17,14 @@ to your app configuration (`config/app.php`):
 ```php
 'providers' => [
     ...
-    Antwerpes\RemoteTemplate\RemoteTemplateServiceProvider::class,
+    Schnoop\RemoteTemplate\RemoteTemplateServiceProvider::class,
 ],    
 ```
 
 Next, publish the configuration files:
 
 ```shell
-php artisan vendor:publish --provider="Antwerpes\RemoteTemplate\RemoteTemplateServiceProvider"
+php artisan vendor:publish --provider="Schnoop\RemoteTemplate\RemoteTemplateServiceProvider"
 ```
 
 ## Configuration

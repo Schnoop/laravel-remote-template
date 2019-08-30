@@ -1,14 +1,14 @@
 {
-  "name": "antwerpes/laravel-remote-template",
+  "name": "schnoop/laravel-remote-template",
   "type": "library",
   "description": "A Laravel package to fetch templates from a remote URL.",
   "keywords": [],
-  "homepage": "http://www.antwerpes.de",
-  "license": "proprietary",
+  "homepage": "https://github.com/schnoop/laravel-remote-template",
+  "license": "MIT",
   "authors": [
     {
       "name": "Thorsten Daners",
-      "email": "thorsten.daners@antwerpes.de"
+      "email": "thorsten@daners.info"
     }
   ],
   "require": {
@@ -22,12 +22,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Antwerpes\\RemoteTemplate\\": "src/"
+      "Schnoop\\RemoteTemplate\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Antwerpes\\RemoteTemplate\\Tests\\": "tests/"
+      "Schnoop\\RemoteTemplate\\Tests\\": "tests/"
     }
   },
   "config": {
@@ -41,7 +41,7 @@
     },
     "laravel": {
       "providers": [
-        "Antwerpes\\RemoteTemplate\\RemoteTemplateServiceProvider"
+        "Schnoop\\RemoteTemplate\\RemoteTemplateServiceProvider"
       ]
     }
   }

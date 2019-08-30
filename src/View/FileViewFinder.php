@@ -1,17 +1,17 @@
 <?php
 
-namespace Antwerpes\RemoteTemplate\View;
+namespace Schnoop\RemoteTemplate\View;
 
-use Antwerpes\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
-use Antwerpes\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
-use Antwerpes\RemoteTemplate\Exceptions\RemoteTemplateNotFoundException;
-use Antwerpes\RemoteTemplate\Exceptions\UrlIsForbiddenException;
+use Schnoop\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
+use Schnoop\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
+use Schnoop\RemoteTemplate\Exceptions\RemoteTemplateNotFoundException;
+use Schnoop\RemoteTemplate\Exceptions\UrlIsForbiddenException;
 use Illuminate\Filesystem\Filesystem;
 
 /**
  * Class FileViewFinder
  *
- * @package Antwerpes\RemoteTemplate\View
+ * @package Schnoop\RemoteTemplate\View
  */
 class FileViewFinder extends \Illuminate\View\FileViewFinder
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Antwerpes\RemoteTemplate\View;
+namespace Schnoop\RemoteTemplate\View;
 
 use Illuminate\Support\Str;
 

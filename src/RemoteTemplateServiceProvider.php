@@ -1,10 +1,10 @@
 <?php
 
-namespace Antwerpes\RemoteTemplate;
+namespace Schnoop\RemoteTemplate;
 
-use Antwerpes\RemoteTemplate\View\Factory;
-use Antwerpes\RemoteTemplate\View\FileViewFinder;
-use Antwerpes\RemoteTemplate\View\RemoteTemplateFinder;
+use Schnoop\RemoteTemplate\View\Factory;
+use Schnoop\RemoteTemplate\View\FileViewFinder;
+use Schnoop\RemoteTemplate\View\RemoteTemplateFinder;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\View\Engines\EngineResolver;
@@ -14,7 +14,7 @@ use Illuminate\View\ViewServiceProvider;
 /**
  * Class RemoteTemplateServiceProvider
  *
- * @package Antwerpes\RemoteTemplate
+ * @package Schnoop\RemoteTemplate
  */
 class RemoteTemplateServiceProvider extends ViewServiceProvider
 {
