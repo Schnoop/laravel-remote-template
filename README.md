@@ -1,6 +1,6 @@
 # Laravel Remote Template
 
-`laravel-remote-template` is a package for fetching templates from a remote URL.
+`laravel-remote-template` is a package for fetching blade templates from a remote URL.
 
 
 ## Installation 
@@ -53,7 +53,7 @@ php artisan vendor:publish --provider="Antwerpes\RemoteTemplate\RemoteTemplateSe
 
 #### Configuring the remote delimiter
 
-The package overwrites the default Laravel view finder class used to resolve views by name. When encountering a special remote delimiter token, the configured remote host will be used to resolve the view instead of the local filesystem.
+The package extends Laravels FileViewFinder class used to resolve views by name. When encountering a special remote delimiter token, the configured remote host will be used to resolve the view instead of the local filesystem.
 
 ```php
 'remote-delimiter' => 'remote:',
@@ -186,3 +186,87 @@ And the view would pass the URL to the remote host:
 
 Now, for any requests made to routes not defined in the application, a request will be made to the remote host. If a successful response is returned, it will be used as the view. Otherwise a `404` response will be returned. 
 
+If you have URLs that you don't want to expose via these fallback, you can configure those in the config file;
+
+- `ignore-urls`: Is an array that can hold multiple urls that should not be resolved via the content host.
+
+```php
+'ignore-urls' => [
+    'foo'
+],
+```
+
+If the request url to the remote host starts with any configured `ignore-urls`, you will receive an UrlIsForbiddenException instead of content:
+
+e.g: 
+
+- http://remote-content-host.dev/foo/
+- http://remote-content-host.dev/foo
+- http://remote-content-host.dev/foo/bar
+- http://remote-content-host.dev/foo/index.php
+
+Instead of configuring URLs starting with an particular string, you also can deny access to urls that end with a suffix:
+
+```php
+'ignore-url-suffix' => [
+    'png',
+    'jpg',
+    'jpeg',
+    'css',
+    'js',
+    'woff',
+    'ttf',
+    'gif',
+    'svg'
+],
+```
+
+In the case above we are denying the request to any static file.
+
+Someday, you will have the case, that you would like to force the remote host to render the template based on a state in your Laravel application. A very common case is definitely to change the navigation if a user is authenticated.
+
+To achieve this, we have a callback that will be triggered right before the call to the remote host happens:
+
+```php
+$this->app->make('remoteview.finder')->setModifyTemplateUrlCallback(function ($url) {
+    return $url;
+});
+```
+
+In this callback, you have the chance to modify the request url as needed to tell the remote host to change its template rendering:
+
+```php
+$this->app->make('remoteview.finder')->setModifyTemplateUrlCallback(function ($url) {
+    $glue = '?';
+    if (strpos($url, $glue) !== false) {
+        $glue = '&';
+    }
+
+    if (Auth::check() === true) {
+        $url .= $glue . 'login=true';
+    }
+
+    // ..... following by more role checks e.g.
+
+    return $url;
+});
+```
+
+Last but not least you have the option to push handlers that will be executed after the call has happened:
+Those handlers are assigned to  response codes, that the remote host returns:
+
+In the following example the handler will be executed only if the remote host respond with a 301 HTTP status code.
+```php
+$this->app->make('remoteview.finder')->pushResponseHandler(301, function (Response $result, array $config, RemoteTemplateFinder $service) {
+    // Do some stuff, and return the HTML.
+});
+```
+
+A common case is that maybe the remote host responds with 301, which is a redirect to another url. In this case we would like to parse the destination out of the response, and fetch the content from there.
+To achieve this, an instance of RemoteTemplateFinder is injected in the function that can be used to execute further calls.
+
+```php
+$this->app->make('remoteview.finder')->pushResponseHandler(301, function (Response $result, array $config, RemoteTemplateFinder $service) {
+    return $service->fetchContentFromRemoteHost($result->getHeaderLine('Location'), $config);
+});
+```
