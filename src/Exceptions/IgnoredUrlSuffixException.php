@@ -1,13 +1,13 @@
 <?php
 
-namespace Antwerpes\RemoteTemplate\Exceptions;
+namespace Schnoop\RemoteTemplate\Exceptions;
 
 use Exception;
 
 /**
  * Class IgnoredUrlSuffixException
  *
- * @package Antwerpes\RemoteTemplate\Exceptions
+ * @package Schnoop\RemoteTemplate\Exceptions
  */
 class IgnoredUrlSuffixException extends Exception
 {

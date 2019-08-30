@@ -1,13 +1,13 @@
 <?php
 
-namespace Antwerpes\RemoteTemplate\Exceptions;
+namespace Schnoop\RemoteTemplate\Exceptions;
 
 use Exception;
 
 /**
  * Class RemoteTemplateNotFoundException
  *
- * @package Antwerpes\RemoteTemplate\Exceptions
+ * @package Schnoop\RemoteTemplate\Exceptions
  */
 class RemoteTemplateNotFoundException extends Exception
 {

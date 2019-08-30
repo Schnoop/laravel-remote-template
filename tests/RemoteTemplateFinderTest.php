@@ -1,9 +1,9 @@
 <?php
 
-use Antwerpes\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
-use Antwerpes\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
-use Antwerpes\RemoteTemplate\Exceptions\UrlIsForbiddenException;
-use Antwerpes\RemoteTemplate\View\RemoteTemplateFinder;
+use Schnoop\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
+use Schnoop\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
+use Schnoop\RemoteTemplate\Exceptions\UrlIsForbiddenException;
+use Schnoop\RemoteTemplate\View\RemoteTemplateFinder;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 
@@ -365,7 +365,7 @@ class RemoteTemplateFinderTest extends TestCase
             $clientMock
         );
 
-        $this->expectException(\Antwerpes\RemoteTemplate\Exceptions\RemoteTemplateNotFoundException::class);
+        $this->expectException(\Schnoop\RemoteTemplate\Exceptions\RemoteTemplateNotFoundException::class);
         $this->instance->findRemotePathView('remote:specific::dasLamm');
     }
 

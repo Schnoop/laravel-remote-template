@@ -1,13 +1,13 @@
 <?php
 
-namespace Antwerpes\RemoteTemplate\Exceptions;
+namespace Schnoop\RemoteTemplate\Exceptions;
 
 use Exception;
 
 /**
  * Class UrlIsForbiddenException
  *
- * @package Antwerpes\RemoteTemplate\Exceptions
+ * @package Schnoop\RemoteTemplate\Exceptions
  */
 class UrlIsForbiddenException extends Exception
 {

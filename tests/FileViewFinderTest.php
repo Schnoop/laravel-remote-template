@@ -1,7 +1,7 @@
 <?php
 
-use Antwerpes\RemoteTemplate\View\Factory;
-use Antwerpes\RemoteTemplate\View\RemoteTemplateFinder;
+use Schnoop\RemoteTemplate\View\Factory;
+use Schnoop\RemoteTemplate\View\RemoteTemplateFinder;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 
@@ -24,7 +24,7 @@ class FileViewFinderTest extends TestCase
         $mock = m::mock(RemoteTemplateFinder::class);
         $mock->shouldReceive('hasRemoteInformation')->with('hurz')->andReturnFalse();
 
-        $this->instance = new \Antwerpes\RemoteTemplate\View\FileViewFinder(
+        $this->instance = new \Schnoop\RemoteTemplate\View\FileViewFinder(
             m::mock(\Illuminate\Filesystem\Filesystem::class),
             [],
             $mock,
@@ -45,7 +45,7 @@ class FileViewFinderTest extends TestCase
         $mock->shouldReceive('findRemotePathView')->with('remote:hurz')->andReturn('blubb');
         $mock->shouldNotHaveReceived('findRemotePathView');
 
-        $this->instance = new \Antwerpes\RemoteTemplate\View\FileViewFinder(
+        $this->instance = new \Schnoop\RemoteTemplate\View\FileViewFinder(
             m::mock(\Illuminate\Filesystem\Filesystem::class),
             [],
             $mock,
