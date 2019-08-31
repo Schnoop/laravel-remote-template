@@ -4,18 +4,18 @@ namespace Schnoop\RemoteTemplate\View;
 
 use Closure;
 use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
-use Illuminate\Contracts\Config\Repository;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
-use InvalidArgumentException;
-use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
-use Schnoop\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
-use Schnoop\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
-use Schnoop\RemoteTemplate\Exceptions\RemoteTemplateNotFoundException;
+use GuzzleHttp\Client;
+use Illuminate\Support\Str;
+use GuzzleHttp\Psr7\Response;
+use InvalidArgumentException;
+use Illuminate\Filesystem\Filesystem;
+use Psr\Http\Message\ResponseInterface;
+use Illuminate\Contracts\Config\Repository;
 use Schnoop\RemoteTemplate\Exceptions\UrlIsForbiddenException;
+use Schnoop\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
+use Schnoop\RemoteTemplate\Exceptions\RemoteTemplateNotFoundException;
+use Schnoop\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
 
 /**
  * Class RemoteTemplateFinder.
