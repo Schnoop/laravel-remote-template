@@ -8,6 +8,11 @@
 
 `laravel-remote-template` is a package for fetching blade templates from a remote URL.
 
+## What is the use case for fetching content from a remote url?
+
+Imagine your customer wants you to build a fully flexible application but also would like to manage the content by themself. Laravel is great for building applications - but managing content is not the focus.
+Maybe you have expirences in Content Management System - but hey, those aren't as flexible as Laravel in building applications.
+Why not use both? A CMS for the content and Laravel for the application. This package helps you to use content that is remote available for rendering in Laravel applications.
 
 ## Installation 
 
