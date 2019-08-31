@@ -2,29 +2,26 @@
 
 namespace Schnoop\RemoteTemplate\View;
 
-use Schnoop\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
-use Schnoop\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
-use Schnoop\RemoteTemplate\Exceptions\RemoteTemplateNotFoundException;
-use Schnoop\RemoteTemplate\Exceptions\UrlIsForbiddenException;
 use Closure;
 use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
-use Illuminate\Contracts\Config\Repository;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
-use InvalidArgumentException;
-use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
+use GuzzleHttp\Client;
+use Illuminate\Support\Str;
+use GuzzleHttp\Psr7\Response;
+use InvalidArgumentException;
+use Illuminate\Filesystem\Filesystem;
+use Psr\Http\Message\ResponseInterface;
+use Illuminate\Contracts\Config\Repository;
+use Schnoop\RemoteTemplate\Exceptions\UrlIsForbiddenException;
+use Schnoop\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
+use Schnoop\RemoteTemplate\Exceptions\RemoteTemplateNotFoundException;
+use Schnoop\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
 
 /**
- * Class RemoteTemplateFinder
- *
- * @package Schnoop\RemoteTemplate\View
+ * Class RemoteTemplateFinder.
  */
 class RemoteTemplateFinder
 {
-
     /**
      * @var string
      */
@@ -106,30 +103,30 @@ class RemoteTemplateFinder
 
         // Check if URL suffix is ignored
         if ($this->urlHasIgnoredSuffix($name, $remoteHost) === true) {
-            throw new IgnoredUrlSuffixException('URL # ' . $name . ' has an ignored suffix.');
+            throw new IgnoredUrlSuffixException('URL # '.$name.' has an ignored suffix.');
         }
 
         // Check if URL is forbidden.
         if ($this->isForbiddenUrl($name, $remoteHost) === true) {
-            throw new UrlIsForbiddenException('URL # ' . $name . ' is forbidden.', 404);
+            throw new UrlIsForbiddenException('URL # '.$name.' is forbidden.', 404);
         }
 
         $url = $this->getTemplateUrlForIdentifier($name, $remoteHost);
         $url = $this->callModifyTemplateUrlCallback($url);
 
         $path = $this->getViewFolder($namespace);
-        $path .= Str::slug($url) . '.blade.php';
+        $path .= Str::slug($url).'.blade.php';
         if ($remoteHost['cache'] === true && $this->files->exists($path) === true) {
             return $path;
         }
 
-        $url = rtrim($remoteHost['host'], '/') . '/' . ltrim($url, '/');
+        $url = rtrim($remoteHost['host'], '/').'/'.ltrim($url, '/');
 
         $content = $this->fetchContentFromRemoteHost($url, $remoteHost);
         if ($content instanceof Response === true) {
             $content = $content->getBody()->getContents();
         } elseif ($content instanceof \Illuminate\Http\Response) {
-            $content = (string)$content->getContent();
+            $content = (string) $content->getContent();
         }
         $this->files->put($path, $content);
 
@@ -152,6 +149,7 @@ class RemoteTemplateFinder
         }
 
         $parsedUrl = parse_url($url, PHP_URL_PATH);
+
         return in_array(pathinfo($parsedUrl, PATHINFO_DIRNAME), $ignoreUrlSuffix, true)
             || in_array(pathinfo($parsedUrl, PATHINFO_BASENAME), $ignoreUrlSuffix, true);
     }
@@ -170,6 +168,7 @@ class RemoteTemplateFinder
         } catch (Exception $e) {
             return false;
         }
+
         return true;
     }
 
@@ -188,6 +187,7 @@ class RemoteTemplateFinder
         if (count($segments) !== 2) {
             throw new InvalidArgumentException("View [{$name}] has an invalid name.");
         }
+
         return $segments;
     }
 
@@ -204,8 +204,9 @@ class RemoteTemplateFinder
         $config = $this->config->get('remote-view.hosts');
         if (isset($config[$namespace]) === false) {
             throw new RemoteHostNotConfiguredException('No remote host configured for namespace # '
-                . $namespace . '. Please check your remote-view.php config file.');
+                .$namespace.'. Please check your remote-view.php config file.');
         }
+
         return $config[$namespace];
     }
 
@@ -226,11 +227,12 @@ class RemoteTemplateFinder
         if (isset($remoteHost['ignore-url-suffix']) === true && is_array($remoteHost['ignore-url-suffix']) === true) {
             $ignoreUrlSuffix = array_merge($ignoreUrlSuffix, $remoteHost['ignore-url-suffix']);
         }
+
         return in_array($pathInfo, $ignoreUrlSuffix, true);
     }
 
     /**
-     * Returns remote url for given $identifier
+     * Returns remote url for given $identifier.
      *
      * @param string $identifier
      * @param array $remoteHost
@@ -244,8 +246,9 @@ class RemoteTemplateFinder
             $route = $remoteHost['mapping'][$identifier];
         }
         if (strpos($route, '/') > 0) {
-            return '/' . $route;
+            return '/'.$route;
         }
+
         return $route;
     }
 
@@ -263,6 +266,7 @@ class RemoteTemplateFinder
         ) {
             return call_user_func($this->templateUrlCallback, $url);
         }
+
         return $url;
     }
 
@@ -277,17 +281,18 @@ class RemoteTemplateFinder
     protected function getViewFolder($namespace): string
     {
         $path = $this->config->get('remote-view.view-folder');
-        $path = rtrim($path, '/') . '/' . $namespace . '/';
+        $path = rtrim($path, '/').'/'.$namespace.'/';
         if (is_dir($path) === false) {
-            if (!mkdir($path, 0777, true) && !is_dir($path)) {
+            if (! mkdir($path, 0777, true) && ! is_dir($path)) {
                 throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
             }
         }
+
         return $path;
     }
 
     /**
-     * Fetch content from $url
+     * Fetch content from $url.
      *
      * @param string $url
      * @param array $remoteHost
@@ -303,6 +308,7 @@ class RemoteTemplateFinder
         }
         try {
             $result = $this->client->get($url, $options);
+
             return $this->callResponseHandler($result, $remoteHost);
         } catch (Exception $e) {
             throw new RemoteTemplateNotFoundException($url, 404);
@@ -310,7 +316,7 @@ class RemoteTemplateFinder
     }
 
     /**
-     * Call handler if any defined
+     * Call handler if any defined.
      *
      * @param ResponseInterface|\Illuminate\Http\Response $result
      * @param array $remoteHost
@@ -324,6 +330,7 @@ class RemoteTemplateFinder
         ) {
             return call_user_func($this->handler[$result->getStatusCode()], $result, $remoteHost, $this);
         }
+
         return $result;
     }
 
@@ -335,7 +342,7 @@ class RemoteTemplateFinder
      */
     public function pushResponseHandler($statusCodes, $callback): void
     {
-        foreach ((array)$statusCodes as $statusCode) {
+        foreach ((array) $statusCodes as $statusCode) {
             $this->handler[$statusCode] = $callback;
         }
     }
@@ -349,5 +356,4 @@ class RemoteTemplateFinder
     {
         $this->templateUrlCallback = $callback;
     }
-
 }

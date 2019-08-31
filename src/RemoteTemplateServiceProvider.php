@@ -2,23 +2,20 @@
 
 namespace Schnoop\RemoteTemplate;
 
-use Schnoop\RemoteTemplate\View\Factory;
-use Schnoop\RemoteTemplate\View\FileViewFinder;
-use Schnoop\RemoteTemplate\View\RemoteTemplateFinder;
 use GuzzleHttp\Client;
-use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\ViewFinderInterface;
 use Illuminate\View\ViewServiceProvider;
+use Schnoop\RemoteTemplate\View\Factory;
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\View\Engines\EngineResolver;
+use Schnoop\RemoteTemplate\View\FileViewFinder;
+use Schnoop\RemoteTemplate\View\RemoteTemplateFinder;
 
 /**
- * Class RemoteTemplateServiceProvider
- *
- * @package Schnoop\RemoteTemplate
+ * Class RemoteTemplateServiceProvider.
  */
 class RemoteTemplateServiceProvider extends ViewServiceProvider
 {
-
     /**
      * Bootstrap the application services.
      */
@@ -26,7 +23,7 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../config/remote-view.php' => config_path('remote-view.php'),
+                __DIR__.'/../config/remote-view.php' => config_path('remote-view.php'),
             ], 'config');
         }
     }
@@ -38,7 +35,7 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
      */
     public function registerViewFinder(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/remote-view.php', 'remote-view');
+        $this->mergeConfigFrom(__DIR__.'/../config/remote-view.php', 'remote-view');
 
         $this->app->singleton('remoteview.finder', function ($app) {
             return new RemoteTemplateFinder(

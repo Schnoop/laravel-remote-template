@@ -5,9 +5,7 @@ namespace Schnoop\RemoteTemplate\Exceptions;
 use Exception;
 
 /**
- * Class RemoteHostNotConfiguredException
- *
- * @package Schnoop\RemoteTemplate\Exceptions
+ * Class RemoteHostNotConfiguredException.
  */
 class RemoteHostNotConfiguredException extends Exception
 {
