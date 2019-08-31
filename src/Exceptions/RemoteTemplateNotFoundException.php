@@ -5,11 +5,8 @@ namespace Schnoop\RemoteTemplate\Exceptions;
 use Exception;
 
 /**
- * Class RemoteTemplateNotFoundException
- *
- * @package Schnoop\RemoteTemplate\Exceptions
+ * Class RemoteTemplateNotFoundException.
  */
 class RemoteTemplateNotFoundException extends Exception
 {
-
 }

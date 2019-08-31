@@ -5,7 +5,7 @@ return [
     'guzzle-config' => [
         'allow_redirects' => false,
         'timeout' => 5,
-        'connect_timeout' => 5
+        'connect_timeout' => 5,
     ],
 
     'remote-delimiter' => 'remote:',
@@ -19,7 +19,7 @@ return [
         'woff',
         'ttf',
         'gif',
-        'svg'
+        'svg',
     ],
 
     'ignore-urls' => [
@@ -56,8 +56,8 @@ return [
             'mapping' => [
 
             ],
-        ]
+        ],
 
-    ]
+    ],
 
 ];
