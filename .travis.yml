@@ -15,6 +15,10 @@ before_install:
   - sudo apt-get update
   - travis_retry composer self-update
 
+install:
+  - yes
+  - travis_retry composer update --prefer-source $COMPOSER_FLAGS
+
 script:
   - vendor/bin/phpunit
 
