@@ -5,9 +5,7 @@ namespace Schnoop\RemoteTemplate\Exceptions;
 use Exception;
 
 /**
- * Class UrlIsForbiddenException
- *
- * @package Schnoop\RemoteTemplate\Exceptions
+ * Class UrlIsForbiddenException.
  */
 class UrlIsForbiddenException extends Exception
 {

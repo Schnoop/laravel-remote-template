@@ -1,24 +1,20 @@
 <?php
 
-use Schnoop\RemoteTemplate\View\Factory;
-use Schnoop\RemoteTemplate\View\RemoteTemplateFinder;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
+use Schnoop\RemoteTemplate\View\Factory;
+use Schnoop\RemoteTemplate\View\RemoteTemplateFinder;
 
 /**
- * Class FileViewFinderTest
+ * Class FileViewFinderTest.
  */
 class FileViewFinderTest extends TestCase
 {
-
     /**
      * @var Factory
      */
     protected $instance;
 
-    /**
-     *
-     */
     public function testFindPathWithoutRemoteIdentifier()
     {
         $mock = m::mock(RemoteTemplateFinder::class);
@@ -35,9 +31,6 @@ class FileViewFinderTest extends TestCase
         $this->instance->find('hurz');
     }
 
-    /**
-     *
-     */
     public function testFindPathWithRemoteIdentifier()
     {
         $mock = m::mock(RemoteTemplateFinder::class);

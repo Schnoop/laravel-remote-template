@@ -5,9 +5,7 @@ namespace Schnoop\RemoteTemplate\Exceptions;
 use Exception;
 
 /**
- * Class IgnoredUrlSuffixException
- *
- * @package Schnoop\RemoteTemplate\Exceptions
+ * Class IgnoredUrlSuffixException.
  */
 class IgnoredUrlSuffixException extends Exception
 {

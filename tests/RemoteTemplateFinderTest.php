@@ -1,18 +1,17 @@
 <?php
 
-use Schnoop\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
-use Schnoop\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
-use Schnoop\RemoteTemplate\Exceptions\UrlIsForbiddenException;
-use Schnoop\RemoteTemplate\View\RemoteTemplateFinder;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
+use Schnoop\RemoteTemplate\View\RemoteTemplateFinder;
+use Schnoop\RemoteTemplate\Exceptions\UrlIsForbiddenException;
+use Schnoop\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
+use Schnoop\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
 
 /**
- * Class RemoteTemplateFinderTest
+ * Class RemoteTemplateFinderTest.
  */
 class RemoteTemplateFinderTest extends TestCase
 {
-
     /**
      * @var RemoteTemplateFinder
      */
@@ -33,12 +32,10 @@ class RemoteTemplateFinderTest extends TestCase
     {
         $config = m::mock(\Illuminate\Contracts\Config\Repository::class);
         $config->shouldReceive('get')->with('remote-view.remote-delimiter')->andReturn('remote:');
+
         return $config;
     }
 
-    /**
-     *
-     */
     public function testNoRemoteDelimiterFound()
     {
         $this->instance = new RemoteTemplateFinder(
@@ -51,9 +48,6 @@ class RemoteTemplateFinderTest extends TestCase
         $this->assertTrue($this->instance->hasRemoteInformation('remote:dasLamm'));
     }
 
-    /**
-     *
-     */
     public function testNoRemoteHostConfigured()
     {
         $config = $this->getConfigMock();
@@ -69,9 +63,6 @@ class RemoteTemplateFinderTest extends TestCase
         $this->instance->findRemotePathView('remote:dasLamm');
     }
 
-    /**
-     *
-     */
     public function testNoRemoteHostConfiguredForUsedNamespace()
     {
         $hosts = [
@@ -92,9 +83,6 @@ class RemoteTemplateFinderTest extends TestCase
         $this->instance->findRemotePathView('remote:specific::dasLamm');
     }
 
-    /**
-     *
-     */
     public function testFileSuffixIsOnGlobalIgnoreList()
     {
         $hosts = [
@@ -103,7 +91,7 @@ class RemoteTemplateFinderTest extends TestCase
         ];
 
         $ignoreFileList = [
-            'svg'
+            'svg',
         ];
 
         $config = $this->getConfigMock();
@@ -120,21 +108,18 @@ class RemoteTemplateFinderTest extends TestCase
         $this->instance->findRemotePathView('remote:dasLamm.svg');
     }
 
-    /**
-     *
-     */
     public function testFileSuffixIsOnHostIgnoreList()
     {
         $hosts = [
             'default' => [
                 'ignore-url-suffix' => [
-                    'svg'
-                ]
+                    'svg',
+                ],
             ],
         ];
 
         $ignoreFileList = [
-            'jpg'
+            'jpg',
         ];
 
         $config = $this->getConfigMock();
@@ -151,9 +136,6 @@ class RemoteTemplateFinderTest extends TestCase
         $this->instance->findRemotePathView('remote:dasLamm.svg');
     }
 
-    /**
-     *
-     */
     public function testCachingEnabledAndFileExistsForDefaultView()
     {
         $hosts = [
@@ -180,9 +162,6 @@ class RemoteTemplateFinderTest extends TestCase
         $this->assertEquals('tests/default/daslamm.blade.php', $this->instance->findRemotePathView('remote:dasLamm'));
     }
 
-    /**
-     *
-     */
     public function testCachingEnabledAndFileExistsForNamespacedView()
     {
         $hosts = [
@@ -209,9 +188,6 @@ class RemoteTemplateFinderTest extends TestCase
         $this->assertEquals('tests/specific/daslamm.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));
     }
 
-    /**
-     *
-     */
     public function testCachingIsDisabledAndFileExistsForNamespacedView()
     {
         $hosts = [
@@ -234,7 +210,6 @@ class RemoteTemplateFinderTest extends TestCase
         $fileSystemMock->shouldReceive('exists')->with('tests/specific/daslamm.blade.php')->andReturn(true);
         $fileSystemMock->shouldReceive('put')->with('tests/specific/daslamm.blade.php', $responseMock);
 
-
         $clientMock = m::mock(\GuzzleHttp\Client::class);
         $clientMock->shouldReceive('get')->with('http://foo.bar/dasLamm', ['http_errors' => false])
             ->andReturn($responseMock);
@@ -248,9 +223,6 @@ class RemoteTemplateFinderTest extends TestCase
         $this->assertEquals('tests/specific/daslamm.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));
     }
 
-    /**
-     *
-     */
     public function testCachingIsDisabledAndFileExistsForNamespacedViewWithIlluminateResponse()
     {
         $hosts = [
@@ -274,7 +246,6 @@ class RemoteTemplateFinderTest extends TestCase
         $fileSystemMock->shouldReceive('exists')->with('tests/specific/daslamm.blade.php')->andReturn(true);
         $fileSystemMock->shouldReceive('put')->with('tests/specific/daslamm.blade.php', 'MyContent');
 
-
         $clientMock = m::mock(\GuzzleHttp\Client::class);
         $clientMock->shouldReceive('get')->with('http://foo.bar/dasLamm', ['http_errors' => false])
             ->andReturn($responseMock);
@@ -288,9 +259,6 @@ class RemoteTemplateFinderTest extends TestCase
         $this->assertEquals('tests/specific/daslamm.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));
     }
 
-    /**
-     *
-     */
     public function testCachingIsDisabledAndFileExistsForNamespacedViewWithGuzzleResponse()
     {
         $hosts = [
@@ -314,7 +282,6 @@ class RemoteTemplateFinderTest extends TestCase
         $fileSystemMock->shouldReceive('exists')->with('tests/specific/daslamm.blade.php')->andReturn(true);
         $fileSystemMock->shouldReceive('put')->with('tests/specific/daslamm.blade.php', 'MyContent');
 
-
         $clientMock = m::mock(\GuzzleHttp\Client::class);
         $clientMock->shouldReceive('get')->with('http://foo.bar/dasLamm', ['http_errors' => false])
             ->andReturn($responseMock);
@@ -328,9 +295,6 @@ class RemoteTemplateFinderTest extends TestCase
         $this->assertEquals('tests/specific/daslamm.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));
     }
 
-    /**
-     *
-     */
     public function testCachingIsDisabledAndFileNotExistsForNamespacedView()
     {
         $hosts = [
@@ -354,7 +318,6 @@ class RemoteTemplateFinderTest extends TestCase
         $fileSystemMock->shouldReceive('exists')->with('tests/specific/daslamm.blade.php')->andReturn(true);
         $fileSystemMock->shouldReceive('put')->with('tests/specific/daslamm.blade.php', 'MyContent');
 
-
         $clientMock = m::mock(\GuzzleHttp\Client::class);
         $clientMock->shouldReceive('get')->with('http://foo.bar/dasLamm', ['http_errors' => false])
             ->andThrow(Exception::class);
@@ -369,9 +332,6 @@ class RemoteTemplateFinderTest extends TestCase
         $this->instance->findRemotePathView('remote:specific::dasLamm');
     }
 
-    /**
-     *
-     */
     public function testRequestWithAdditionalOptions()
     {
         $hosts = [
@@ -399,7 +359,6 @@ class RemoteTemplateFinderTest extends TestCase
         $fileSystemMock->shouldReceive('exists')->with('tests/specific/daslamm.blade.php')->andReturn(true);
         $fileSystemMock->shouldReceive('put')->with('tests/specific/daslamm.blade.php', 'MyContent');
 
-
         $clientMock = m::mock(\GuzzleHttp\Client::class);
         $clientMock->shouldReceive('get')->with('http://foo.bar/dasLamm', ['auth_user' => 't', 'auth_password' => '', 'http_errors' => false])
             ->andReturn($responseMock);
@@ -413,10 +372,6 @@ class RemoteTemplateFinderTest extends TestCase
         $this->assertEquals('tests/specific/daslamm.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));
     }
 
-
-    /**
-     *
-     */
     public function testWithModifyTemplateUrlCallback()
     {
         $hosts = [
@@ -444,7 +399,6 @@ class RemoteTemplateFinderTest extends TestCase
         $fileSystemMock->shouldReceive('exists')->with('tests/specific/daslamm.blade.php')->andReturn(true);
         $fileSystemMock->shouldReceive('put')->with('tests/specific/hurz.blade.php', 'MyContent');
 
-
         $clientMock = m::mock(\GuzzleHttp\Client::class);
         $clientMock->shouldReceive('get')->with('http://foo.bar/hurz', ['auth_user' => 't', 'auth_password' => '', 'http_errors' => false])
             ->andReturn($responseMock);
@@ -461,10 +415,6 @@ class RemoteTemplateFinderTest extends TestCase
         $this->assertEquals('tests/specific/hurz.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));
     }
 
-
-    /**
-     *
-     */
     public function testWithResponseHandler()
     {
         $hosts = [
@@ -492,7 +442,6 @@ class RemoteTemplateFinderTest extends TestCase
         $fileSystemMock->shouldReceive('exists')->with('tests/specific/daslamm.blade.php')->andReturn(true);
         $fileSystemMock->shouldReceive('put')->with('tests/specific/daslamm.blade.php', 'Blubb');
 
-
         $clientMock = m::mock(\GuzzleHttp\Client::class);
         $clientMock->shouldReceive('get')->with('http://foo.bar/dasLamm', ['auth_user' => 't', 'auth_password' => '', 'http_errors' => false])
             ->andReturn($responseMock);
@@ -509,10 +458,6 @@ class RemoteTemplateFinderTest extends TestCase
         $this->assertEquals('tests/specific/daslamm.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));
     }
 
-
-    /**
-     *
-     */
     public function testWithResponseHandlersArray()
     {
         $hosts = [
@@ -540,7 +485,6 @@ class RemoteTemplateFinderTest extends TestCase
         $fileSystemMock->shouldReceive('exists')->with('tests/specific/daslamm.blade.php')->andReturn(true);
         $fileSystemMock->shouldReceive('put')->with('tests/specific/daslamm.blade.php', 'Blubb');
 
-
         $clientMock = m::mock(\GuzzleHttp\Client::class);
         $clientMock->shouldReceive('get')->with('http://foo.bar/dasLamm', ['auth_user' => 't', 'auth_password' => '', 'http_errors' => false])
             ->andReturn($responseMock);
@@ -557,17 +501,13 @@ class RemoteTemplateFinderTest extends TestCase
         $this->assertEquals('tests/specific/daslamm.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));
     }
 
-
-    /**
-     *
-     */
     public function testUrlIsOnDefaultHostForbiddenList()
     {
         $hosts = [
             'default' => [
                 'ignore-urls' => [
-                    'typo3'
-                ]
+                    'typo3',
+                ],
             ],
         ];
 
@@ -591,15 +531,12 @@ class RemoteTemplateFinderTest extends TestCase
         $this->instance->findRemotePathView('remote:typo3/');
     }
 
-    /**
-     *
-     */
     public function testUrlIsOnGeneralHostForbiddenList()
     {
         $hosts = [
             'default' => [
                 'ignore-urls' => [
-                ]
+                ],
             ],
         ];
 
