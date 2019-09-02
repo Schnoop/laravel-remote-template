@@ -175,6 +175,8 @@ And the view would pass the URL to the remote host:
 
 Now, for any requests made to routes not defined in the application, a request will be made to the remote host. If a successful response is returned, it will be used as the view. Otherwise a `404` response will be returned. 
 
+#### Configuring remote URls that should be ignored
+
 If you have URLs that you don't want to expose via these fallback, you can configure those in the config file;
 
 - `ignore-urls`: Is an array that can hold multiple urls that should not be resolved via the content host.
@@ -194,6 +196,8 @@ e.g:
 - http://remote-content-host.dev/foo/bar
 - http://remote-content-host.dev/foo/index.php
 
+#### Configuring remote URls suffixes that should be ignored
+
 Instead of configuring URLs starting with an particular string, you also can deny access to urls that end with a suffix:
 
 ```php
@@ -211,6 +215,8 @@ Instead of configuring URLs starting with an particular string, you also can den
 ```
 
 In the case above we are denying the request to any static file.
+
+#### Modify remote URL before call is executed
 
 Someday, you will have the case, that you would like to force the remote host to render the template based on a state in your Laravel application. A very common case is definitely to change the navigation if a user is authenticated.
 
@@ -240,6 +246,8 @@ $this->app->make('remoteview.finder')->setModifyTemplateUrlCallback(function ($u
     return $url;
 });
 ```
+
+#### Push response handlers
 
 Last but not least you have the option to push handlers that will be executed after the call has happened:
 Those handlers are assigned to  response codes, that the remote host returns:
