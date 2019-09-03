@@ -8,26 +8,24 @@
 
 `laravel-remote-template` is a package for fetching blade templates from a remote URL.
 
-- [Installation](#installation)
-- [Configuration](#configuration)
-  - [Configuring the remote delimiter](#configuring-the-remote-delimiter)
-  - [Configuring the view folder](#configuring-the-view-folder)
-  - [Configuring the remote host](#configuring-the-remote-host)
-  - [Configuring the URL mappings](#configuring-the-url-mappings)
-  - [Other configuration options](#other-configuration-options)
-- [Using a fallback route](#using-a-fallback-route)
-  - [Configuring remote URls that should be ignored](#configuring-remote-urls-that-should-be-ignored)
-  - [Configuring remote URls suffixes that should be ignored](#configuring-remote-urls-suffixes-that-should-be-ignored)
-  - [Modify remote URL before call is executed](#modify-remote-url-before-call-is-executed)
-  - [Push response handlers](#push-response-handlers)
-
 ## What is the use case for fetching content from a remote url?
 
 Imagine your customer wants you to build a fully flexible application but also would like to manage the content by themself. Laravel is great for building applications - but managing content is not the focus.
 Maybe you have expirences in Content Management System - but hey, those aren't as flexible as Laravel in building applications.
 Why not use both? A CMS for the content and Laravel for the application. This package helps you to use content that is remote available for rendering in Laravel applications.
 
-
+- [Installation](#installation)
+- [Configuration](#configuration)
+  - [Configuring the remote delimiter](#configuring-the-remote-delimiter)
+  - [Configuring the view folder](#configuring-the-view-folder)
+  - [Configuring the remote host](#configuring-the-remote-host)
+  - [Configuring the URL mappings](#configuring-the-url-mappings)
+  - [Configuring remote URls that should be ignored](#configuring-remote-urls-that-should-be-ignored)
+  - [Configuring remote URls suffixes that should be ignored](#configuring-remote-urls-suffixes-that-should-be-ignored)
+  - [Other configuration options](#other-configuration-options)
+- [Using a fallback route](#using-a-fallback-route)
+- [Modify remote URL before call is executed](#modify-remote-url-before-call-is-executed)
+- [Push response handlers](#push-response-handlers)
 
 ## Installation 
 
@@ -123,7 +121,7 @@ If a `default` host is specified, it will be used when no other namespace is use
 
 The host base URL can defined using the `hosts.*.host` configuration option:
 
-```ph
+```php
 'hosts' => [
         'default' => [
             'host' => env('CONTENT_DOMAIN'),
@@ -145,50 +143,6 @@ Any token following the remote delimiter and host identifier will be used to con
         ],
     ],
 ```
-
-#### Other configuration options
-
-- `hosts.*.cache`: When set to true, requests to the remote host are only made if no matching template could be found in the view folder. If a template is found, it will be re-used for resolving the view.
-- `hosts.*.request_options`: Array of request options that will be passed to the Guzzle HTTP client when making the request to the remote host. This option can be used to configure authentication.
-
-
-
-## Using a fallback route
-
-By using a fallback route in combination with a default view, any requests that do not match a route defined in Laravel will instead be forwarded to any of the configured remote hosts.
-
-In your `routes/web.php` file:
-
-```php
-Route::fallback('FallbackController@fallback');
-```
-
-The controller would then simply call a view and pass the requesting URL:
-
-```php
-class FallbackController extends Controller
-{
-    /**
-     * Fallback.
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function fallback(Request $request): View
-    {
-        return view('cms::fallback')->with('uri', $request->getRequestUri());
-    }
-}
-```
-
-And the view would pass the URL to the remote host:
-
-```php
-@extends('remote:'.$uri)
-```
-
-Now, for any requests made to routes not defined in the application, a request will be made to the remote host. If a successful response is returned, it will be used as the view. Otherwise a `404` response will be returned. 
 
 #### Configuring remote URls that should be ignored
 
@@ -231,7 +185,51 @@ Instead of configuring URLs starting with an particular string, you also can den
 
 In the case above we are denying the request to any static file.
 
-#### Modify remote URL before call is executed
+#### Other configuration options
+
+- `hosts.*.cache`: When set to true, requests to the remote host are only made if no matching template could be found in the view folder. If a template is found, it will be re-used for resolving the view.
+- `hosts.*.request_options`: Array of request options that will be passed to the Guzzle HTTP client when making the request to the remote host. This option can be used to configure authentication.
+
+## Using a fallback route
+
+By using a fallback route in combination with a default view, any requests that do not match a route defined in Laravel will instead be forwarded to any of the configured remote hosts.
+
+In your `routes/web.php` file:
+
+```php
+Route::fallback('FallbackController@fallback');
+```
+
+The controller would then simply call a view and pass the requesting URL:
+
+```php
+class FallbackController extends Controller
+{
+    /**
+     * Fallback.
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function fallback(Request $request): View
+    {
+        return view('cms::fallback')->with('uri', $request->getRequestUri());
+    }
+}
+```
+
+And the view would pass the URL to the remote host:
+
+```php
+@extends('remote:'.$uri)
+```
+
+Now, for any requests made to routes not defined in the application, a request will be made to the remote host. If a successful response is returned, it will be used as the view. Otherwise a `404` response will be returned. 
+
+
+
+## Modify remote URL before call is executed
 
 Someday, you will have the case, that you would like to force the remote host to render the template based on a state in your Laravel application. A very common case is definitely to change the navigation if a user is authenticated.
 
@@ -262,7 +260,7 @@ $this->app->make('remoteview.finder')->setModifyTemplateUrlCallback(function ($u
 });
 ```
 
-#### Push response handlers
+## Push response handlers
 
 Last but not least you have the option to push handlers that will be executed after the call has happened:
 Those handlers are assigned to  response codes, that the remote host returns:
