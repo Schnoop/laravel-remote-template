@@ -304,7 +304,7 @@ class RemoteTemplateFinder
     {
         $options = ['http_errors' => false];
         if (isset($remoteHost['request_options']) === true) {
-            $options = array_merge($remoteHost['request_options'], $options);
+            $options = array_merge($options, $remoteHost['request_options']);
         }
         try {
             $result = $this->client->get($url, $options);

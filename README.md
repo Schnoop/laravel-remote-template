@@ -14,6 +14,19 @@ Imagine your customer wants you to build a fully flexible application but also w
 Maybe you have expirences in Content Management System - but hey, those aren't as flexible as Laravel in building applications.
 Why not use both? A CMS for the content and Laravel for the application. This package helps you to use content that is remote available for rendering in Laravel applications.
 
+- [Installation](#installation)
+- [Configuration](#configuration)
+  - [Configuring the remote delimiter](#configuring-the-remote-delimiter)
+  - [Configuring the view folder](#configuring-the-view-folder)
+  - [Configuring the remote host](#configuring-the-remote-host)
+  - [Configuring the URL mappings](#configuring-the-url-mappings)
+  - [Configuring remote URls that should be ignored](#configuring-remote-urls-that-should-be-ignored)
+  - [Configuring remote URls suffixes that should be ignored](#configuring-remote-urls-suffixes-that-should-be-ignored)
+  - [Other configuration options](#other-configuration-options)
+- [Using a fallback route](#using-a-fallback-route)
+- [Modify remote URL before call is executed](#modify-remote-url-before-call-is-executed)
+- [Push response handlers](#push-response-handlers)
+
 ## Installation 
 
 Simply install the package with composer:
@@ -108,7 +121,7 @@ If a `default` host is specified, it will be used when no other namespace is use
 
 The host base URL can defined using the `hosts.*.host` configuration option:
 
-```ph
+```php
 'hosts' => [
         'default' => [
             'host' => env('CONTENT_DOMAIN'),
@@ -131,12 +144,51 @@ Any token following the remote delimiter and host identifier will be used to con
     ],
 ```
 
+#### Configuring remote URls that should be ignored
+
+If you have URLs that you don't want to expose via these fallback, you can configure those in the config file;
+
+- `ignore-urls`: Is an array that can hold multiple urls that should not be resolved via the content host.
+
+```php
+'ignore-urls' => [
+    'foo'
+],
+```
+
+If the request url to the remote host starts with any configured `ignore-urls`, you will receive an UrlIsForbiddenException instead of content:
+
+e.g: 
+
+- http://remote-content-host.dev/foo/
+- http://remote-content-host.dev/foo
+- http://remote-content-host.dev/foo/bar
+- http://remote-content-host.dev/foo/index.php
+
+#### Configuring remote URls suffixes that should be ignored
+
+Instead of configuring URLs starting with an particular string, you also can deny access to urls that end with a suffix:
+
+```php
+'ignore-url-suffix' => [
+    'png',
+    'jpg',
+    'jpeg',
+    'css',
+    'js',
+    'woff',
+    'ttf',
+    'gif',
+    'svg'
+],
+```
+
+In the case above we are denying the request to any static file.
+
 #### Other configuration options
 
 - `hosts.*.cache`: When set to true, requests to the remote host are only made if no matching template could be found in the view folder. If a template is found, it will be re-used for resolving the view.
 - `hosts.*.request_options`: Array of request options that will be passed to the Guzzle HTTP client when making the request to the remote host. This option can be used to configure authentication.
-
-
 
 ## Using a fallback route
 
@@ -175,42 +227,9 @@ And the view would pass the URL to the remote host:
 
 Now, for any requests made to routes not defined in the application, a request will be made to the remote host. If a successful response is returned, it will be used as the view. Otherwise a `404` response will be returned. 
 
-If you have URLs that you don't want to expose via these fallback, you can configure those in the config file;
 
-- `ignore-urls`: Is an array that can hold multiple urls that should not be resolved via the content host.
 
-```php
-'ignore-urls' => [
-    'foo'
-],
-```
-
-If the request url to the remote host starts with any configured `ignore-urls`, you will receive an UrlIsForbiddenException instead of content:
-
-e.g: 
-
-- http://remote-content-host.dev/foo/
-- http://remote-content-host.dev/foo
-- http://remote-content-host.dev/foo/bar
-- http://remote-content-host.dev/foo/index.php
-
-Instead of configuring URLs starting with an particular string, you also can deny access to urls that end with a suffix:
-
-```php
-'ignore-url-suffix' => [
-    'png',
-    'jpg',
-    'jpeg',
-    'css',
-    'js',
-    'woff',
-    'ttf',
-    'gif',
-    'svg'
-],
-```
-
-In the case above we are denying the request to any static file.
+## Modify remote URL before call is executed
 
 Someday, you will have the case, that you would like to force the remote host to render the template based on a state in your Laravel application. A very common case is definitely to change the navigation if a user is authenticated.
 
@@ -240,6 +259,8 @@ $this->app->make('remoteview.finder')->setModifyTemplateUrlCallback(function ($u
     return $url;
 });
 ```
+
+## Push response handlers
 
 Last but not least you have the option to push handlers that will be executed after the call has happened:
 Those handlers are assigned to  response codes, that the remote host returns:
