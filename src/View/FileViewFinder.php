@@ -3,10 +3,10 @@
 namespace Schnoop\RemoteTemplate\View;
 
 use Illuminate\Filesystem\Filesystem;
-use Schnoop\RemoteTemplate\Exceptions\UrlIsForbiddenException;
 use Schnoop\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
-use Schnoop\RemoteTemplate\Exceptions\RemoteTemplateNotFoundException;
 use Schnoop\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
+use Schnoop\RemoteTemplate\Exceptions\RemoteTemplateNotFoundException;
+use Schnoop\RemoteTemplate\Exceptions\UrlIsForbiddenException;
 
 /**
  * Class FileViewFinder.
