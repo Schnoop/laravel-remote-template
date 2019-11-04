@@ -54,7 +54,7 @@ class FeatureTest extends \Orchestra\Testbench\TestCase
     public function testResponseOk()
     {
         $crawler = $this->call('GET', 'web/200');
-        $crawler->assertOk();
+        $crawler->assertStatus(200);
     }
 
     public function testResponseIs500IfDomainNotFound()
@@ -66,6 +66,7 @@ class FeatureTest extends \Orchestra\Testbench\TestCase
 
     public function testResponseHandlerIfResponseIs404()
     {
+        $this->app['config']->set('remote-view.hosts.default.host', 'http://www.google.com');
         $this->app->make('remoteview.finder')->pushResponseHandler(404,
             function (\GuzzleHttp\Psr7\Response $result, array $config, \Schnoop\RemoteTemplate\View\RemoteTemplateFinder $service) {
                 return 'This content has been modified through a response handler.';
