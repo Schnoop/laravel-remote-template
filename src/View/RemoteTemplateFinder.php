@@ -96,7 +96,9 @@ class RemoteTemplateFinder
 
         $namespace = 'default';
         if ($this->hasNamespace($name) === true) {
-            [$namespace, $name] = $this->parseRemoteNamespaceSegments($name);
+            $elements = $this->parseRemoteNamespaceSegments($name);
+            $namespace = $elements[0];
+            $name = $elements[1];
         }
 
         $remoteHost = $this->getRemoteHost($namespace);
