@@ -3,11 +3,11 @@
 namespace Schnoop\RemoteTemplate;
 
 use GuzzleHttp\Client;
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\ViewFinderInterface;
 use Illuminate\View\ViewServiceProvider;
 use Schnoop\RemoteTemplate\View\Factory;
-use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\View\Engines\EngineResolver;
 use Schnoop\RemoteTemplate\View\FileViewFinder;
 use Schnoop\RemoteTemplate\View\RemoteTemplateFinder;
 

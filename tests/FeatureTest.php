@@ -7,7 +7,6 @@ use Illuminate\Routing\Router;
  */
 class FeatureTest extends \Orchestra\Testbench\TestCase
 {
-
     /**
      * @param \Illuminate\Foundation\Application $app
      *
@@ -42,28 +41,22 @@ class FeatureTest extends \Orchestra\Testbench\TestCase
             'as' => 'web.200',
             'uses' => function () {
                 return view('200');
-            }
+            },
         ]);
         $router->get('web/404', [
             'as' => 'web.404',
             'uses' => function () {
                 return view('404');
-            }
+            },
         ]);
     }
 
-    /**
-     *
-     */
     public function testResponseOk()
     {
         $crawler = $this->call('GET', 'web/200');
         $crawler->assertOk();
     }
 
-    /**
-     *
-     */
     public function testResponseIs500IfDomainNotFound()
     {
         $this->app['config']->set('remote-view.hosts.default.host', 'http://www.googlasdade.com');
@@ -71,9 +64,6 @@ class FeatureTest extends \Orchestra\Testbench\TestCase
         $crawler->assertStatus(500);
     }
 
-    /**
-     *
-     */
     public function testResponseHandlerIfResponseIs404()
     {
         $this->app->make('remoteview.finder')->pushResponseHandler(404,

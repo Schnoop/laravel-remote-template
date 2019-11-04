@@ -2,10 +2,10 @@
 
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
-use Schnoop\RemoteTemplate\View\RemoteTemplateFinder;
-use Schnoop\RemoteTemplate\Exceptions\UrlIsForbiddenException;
 use Schnoop\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
 use Schnoop\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
+use Schnoop\RemoteTemplate\Exceptions\UrlIsForbiddenException;
+use Schnoop\RemoteTemplate\View\RemoteTemplateFinder;
 
 /**
  * Class RemoteTemplateFinderTest.
