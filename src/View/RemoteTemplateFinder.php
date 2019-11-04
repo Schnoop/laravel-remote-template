@@ -340,7 +340,7 @@ class RemoteTemplateFinder
      * @param int|array $statusCodes
      * @param callable $callback
      */
-    public function pushResponseHandler($statusCodes, $callback): void
+    public function pushResponseHandler($statusCodes, $callback)
     {
         foreach ((array) $statusCodes as $statusCode) {
             $this->handler[$statusCode] = $callback;
@@ -352,7 +352,7 @@ class RemoteTemplateFinder
      *
      * @param Closure $callback
      */
-    public function setModifyTemplateUrlCallback($callback): void
+    public function setModifyTemplateUrlCallback($callback)
     {
         $this->templateUrlCallback = $callback;
     }

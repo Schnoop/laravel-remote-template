@@ -19,7 +19,7 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
     /**
      * Bootstrap the application services.
      */
-    public function boot(): void
+    public function boot()
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -33,7 +33,7 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
      *
      * @return void
      */
-    public function registerViewFinder(): void
+    public function registerViewFinder()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/remote-view.php', 'remote-view');
 
