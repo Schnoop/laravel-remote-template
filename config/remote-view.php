@@ -50,8 +50,7 @@ return [
             'cache' => false,
             'host' => 'https://www.your-second-content-domain.tld',
             'request_options' => [
-                'auth_user' => '',
-                'auth_password' => '',
+                'auth' => ['', '', '']
             ],
             'mapping' => [
 

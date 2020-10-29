@@ -29,6 +29,22 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
     }
 
     /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->registerViewFinder();
+
+        $this->registerFactory();
+
+        $this->registerBladeCompiler();
+
+        $this->registerEngineResolver();
+    }
+
+    /**
      * Register the view finder implementation.
      *
      * @return void
@@ -45,7 +61,7 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
             );
         });
 
-        $this->app->singleton('view.finder', function ($app) {
+        $this->app->bind('view.finder', function ($app) {
             return new FileViewFinder(
                 $app['files'],
                 $app['config']['view.paths'],
