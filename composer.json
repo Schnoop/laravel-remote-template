@@ -45,5 +45,7 @@
         "Schnoop\\RemoteTemplate\\RemoteTemplateServiceProvider"
       ]
     }
-  }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
