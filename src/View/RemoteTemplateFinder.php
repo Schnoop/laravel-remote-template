@@ -55,9 +55,9 @@ class RemoteTemplateFinder
     /**
      * Create a new file view loader instance.
      *
-     * @param Filesystem $files
-     * @param Repository $config
-     * @param Client $client
+     * @param  Filesystem  $files
+     * @param  Repository  $config
+     * @param  Client  $client
      */
     public function __construct(Filesystem $files, Repository $config, Client $client)
     {
@@ -70,8 +70,7 @@ class RemoteTemplateFinder
     /**
      * Returns true if template is a remote resource.
      *
-     * @param string $name Name of template
-     *
+     * @param  string  $name  Name of template
      * @return bool
      */
     public function hasRemoteInformation($name): bool
@@ -82,9 +81,9 @@ class RemoteTemplateFinder
     /**
      * Fetch template from remote resource, store locally and return path to local file.
      *
-     * @param string $name Remote URL to fetch template from
-     *
+     * @param  string  $name  Remote URL to fetch template from
      * @return string
+     *
      * @throws IgnoredUrlSuffixException
      * @throws RemoteTemplateNotFoundException
      * @throws RemoteHostNotConfiguredException
@@ -138,9 +137,8 @@ class RemoteTemplateFinder
     /**
      * Returns true if given url is forbidden.
      *
-     * @param string $url
-     * @param array $remoteHost
-     *
+     * @param  string  $url
+     * @param  array  $remoteHost
      * @return bool
      */
     private function isForbiddenUrl($url, $remoteHost): bool
@@ -159,8 +157,7 @@ class RemoteTemplateFinder
     /**
      * Check for valid namespace.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return bool
      */
     protected function hasNamespace($name): bool
@@ -177,8 +174,7 @@ class RemoteTemplateFinder
     /**
      * Get the segments of a template with a named path.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return array
      *
      * @throws InvalidArgumentException
@@ -196,9 +192,9 @@ class RemoteTemplateFinder
     /**
      * Return array with remote host config.
      *
-     * @param string $namespace
-     *
+     * @param  string  $namespace
      * @return array
+     *
      * @throws RemoteHostNotConfiguredException
      */
     protected function getRemoteHost($namespace): array
@@ -215,9 +211,8 @@ class RemoteTemplateFinder
     /**
      * Returns true if given url is static.
      *
-     * @param string $url
-     * @param array $remoteHost
-     *
+     * @param  string  $url
+     * @param  array  $remoteHost
      * @return bool
      */
     protected function urlHasIgnoredSuffix($url, $remoteHost): bool
@@ -236,9 +231,8 @@ class RemoteTemplateFinder
     /**
      * Returns remote url for given $identifier.
      *
-     * @param string $identifier
-     * @param array $remoteHost
-     *
+     * @param  string  $identifier
+     * @param  array  $remoteHost
      * @return string
      */
     protected function getTemplateUrlForIdentifier($identifier, $remoteHost): string
@@ -257,8 +251,7 @@ class RemoteTemplateFinder
     /**
      * Call callback that will be called after template url has been set.
      *
-     * @param string $url
-     *
+     * @param  string  $url
      * @return string
      */
     protected function callModifyTemplateUrlCallback(string $url): string
@@ -275,9 +268,9 @@ class RemoteTemplateFinder
     /**
      * Get folder where fetched views will be stored.
      *
-     * @param string $namespace
-     *
+     * @param  string  $namespace
      * @return string
+     *
      * @throws RuntimeException
      */
     protected function getViewFolder($namespace): string
@@ -296,10 +289,10 @@ class RemoteTemplateFinder
     /**
      * Fetch content from $url.
      *
-     * @param string $url
-     * @param array $remoteHost
-     *
+     * @param  string  $url
+     * @param  array  $remoteHost
      * @return ResponseInterface|Response
+     *
      * @throws RemoteTemplateNotFoundException
      */
     public function fetchContentFromRemoteHost($url, $remoteHost)
@@ -320,9 +313,8 @@ class RemoteTemplateFinder
     /**
      * Call handler if any defined.
      *
-     * @param ResponseInterface $result
-     * @param array $remoteHost
-     *
+     * @param  ResponseInterface  $result
+     * @param  array  $remoteHost
      * @return ResponseInterface|\Illuminate\Http\Response|Response
      */
     protected function callResponseHandler($result, array $remoteHost)
@@ -339,8 +331,8 @@ class RemoteTemplateFinder
     /**
      * Push a handler to the stack.
      *
-     * @param int|array $statusCodes
-     * @param callable $callback
+     * @param  int|array  $statusCodes
+     * @param  callable  $callback
      */
     public function pushResponseHandler($statusCodes, $callback)
     {
@@ -352,7 +344,7 @@ class RemoteTemplateFinder
     /**
      * Set a callback that will be called after template url has been set.
      *
-     * @param Closure $callback
+     * @param  Closure  $callback
      */
     public function setModifyTemplateUrlCallback($callback)
     {

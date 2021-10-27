@@ -12,8 +12,7 @@ class Factory extends \Illuminate\View\Factory
     /**
      * Normalize a view name.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return string
      */
     protected function normalizeName($name): string
