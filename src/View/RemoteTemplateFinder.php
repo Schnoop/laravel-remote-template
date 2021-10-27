@@ -186,7 +186,7 @@ class RemoteTemplateFinder
     protected function parseRemoteNamespaceSegments($name): array
     {
         $segments = explode(FileViewFinder::HINT_PATH_DELIMITER, $name);
-        if (count($segments) !== 2) {
+        if (count($segments) < 2) {
             throw new InvalidArgumentException("View [{$name}] has an invalid name.");
         }
 
