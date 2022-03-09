@@ -21,10 +21,10 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
     /**
      * Create a new file view loader instance.
      *
-     * @param Filesystem $files
-     * @param array $paths
-     * @param RemoteTemplateFinder $remoteView
-     * @param array $extensions
+     * @param  Filesystem  $files
+     * @param  array  $paths
+     * @param  RemoteTemplateFinder  $remoteView
+     * @param  array  $extensions
      */
     public function __construct(
         Filesystem $files,
@@ -39,9 +39,9 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
     /**
      * Get the fully qualified location of the view.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return string
+     *
      * @throws IgnoredUrlSuffixException
      * @throws RemoteTemplateNotFoundException
      * @throws RemoteHostNotConfiguredException

@@ -74,10 +74,9 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
     /**
      * Create a new Factory Instance.
      *
-     * @param  EngineResolver $resolver
-     * @param  ViewFinderInterface $finder
-     * @param  Dispatcher $events
-     *
+     * @param  EngineResolver  $resolver
+     * @param  ViewFinderInterface  $finder
+     * @param  Dispatcher  $events
      * @return Factory
      */
     protected function createFactory($resolver, $finder, $events): Factory
