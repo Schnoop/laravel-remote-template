@@ -8,8 +8,7 @@ use Illuminate\Routing\Router;
 class FeatureTest extends \Orchestra\Testbench\TestCase
 {
     /**
-     * @param \Illuminate\Foundation\Application $app
-     *
+     * @param  \Illuminate\Foundation\Application  $app
      * @return array
      */
     protected function getPackageProviders($app)
@@ -20,8 +19,7 @@ class FeatureTest extends \Orchestra\Testbench\TestCase
     /**
      * Define environment setup.
      *
-     * @param Illuminate\Foundation\Application $app
-     *
+     * @param  Illuminate\Foundation\Application  $app
      * @return void
      */
     protected function getEnvironmentSetUp($app)
@@ -33,7 +31,7 @@ class FeatureTest extends \Orchestra\Testbench\TestCase
     }
 
     /**
-     * @param Router $router
+     * @param  Router  $router
      */
     protected function addWebRoutes(Router $router)
     {
