@@ -238,13 +238,13 @@ class RemoteTemplateFinderTest extends TestCase
         $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn([]);
         $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
 
-        $responseMock = m::mock(\Illuminate\Http\Response::class);
+        $responseMock = m::mock(\Psr\Http\Message\ResponseInterface::class);
         $responseMock->shouldReceive('getStatusCode')->andReturn(200);
         $responseMock->shouldReceive('getContent')->andReturn('MyContent');
 
         $fileSystemMock = $this->getFilesystemMock();
         $fileSystemMock->shouldReceive('exists')->with('tests/specific/daslamm.blade.php')->andReturn(true);
-        $fileSystemMock->shouldReceive('put')->with('tests/specific/daslamm.blade.php', 'MyContent');
+        $fileSystemMock->shouldReceive('put')->with('tests/specific/daslamm.blade.php', $responseMock);
 
         $clientMock = m::mock(\GuzzleHttp\Client::class);
         $clientMock->shouldReceive('get')->with('http://foo.bar/dasLamm', ['http_errors' => false])

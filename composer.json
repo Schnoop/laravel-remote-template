@@ -12,14 +12,14 @@
     }
   ],
   "require": {
-    "php": ">=7.2",
-    "laravel/framework": "^7.0|^8.0",
-    "guzzlehttp/guzzle": "^6.5 || ^7.0"
+    "php": "^8.0.2",
+    "laravel/framework": "^9.2",
+    "guzzlehttp/guzzle": "^7.2"
   },
   "require-dev": {
-    "mockery/mockery": "^1.2",
-    "orchestra/testbench": "^5.0",
-    "phpunit/phpunit": "^6.0|^7.0|^8.0|^9.0"
+    "mockery/mockery": "^1.4.4",
+    "orchestra/testbench": "^7.0",
+    "phpunit/phpunit": "^9.5.10"
   },
   "autoload": {
     "psr-4": {
@@ -36,9 +36,21 @@
     "sort-packages": true,
     "optimize-autoloader": true
   },
+  "scripts": {
+    "prepare": [
+      "@composer run post-autoload-dump"
+    ],
+    "test": [
+      "@composer run prepare",
+      "@php vendor/bin/phpunit -c ./ --color"
+    ],
+    "post-autoload-dump": [
+      "@php vendor/bin/testbench package:discover --ansi"
+    ]
+  },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.0.x-dev"
+      "dev-master": "9.0-dev"
     },
     "laravel": {
       "providers": [
