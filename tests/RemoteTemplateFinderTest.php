@@ -558,4 +558,47 @@ class RemoteTemplateFinderTest extends TestCase
         $this->expectExceptionMessage('URL # typo3 is forbidden.');
         $this->instance->findRemotePathView('remote:typo3');
     }
+
+    public function testWithDifferentViewFile()
+    {
+        $hosts = [
+            'specific' => [
+                'cache' => false,
+                'host' => 'http://foo.bar',
+                'request_options' => [
+                    'auth_user' => 't',
+                    'auth_password' => '',
+                ],
+            ],
+        ];
+
+        $config = $this->getConfigMock();
+        $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
+        $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn([]);
+        $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
+
+        $responseMock = m::mock(\GuzzleHttp\Psr7\Response::class);
+        $responseMock->shouldReceive('getStatusCode')->andReturn(200);
+        $responseMock->shouldReceive('getBody->getContents')->andReturn('MyContent');
+
+        $fileSystemMock = $this->getFilesystemMock();
+        $fileSystemMock->shouldReceive('exists')->with('tests/specific/dong.blade.php')->andReturn(true);
+        $fileSystemMock->shouldReceive('put')->with('tests/specific/dong.blade.php', 'MyContent');
+
+        $clientMock = m::mock(\GuzzleHttp\Client::class);
+        $clientMock->shouldReceive('get')->with('http://foo.bar/dasLamm', ['auth_user' => 't', 'auth_password' => '', 'http_errors' => false])
+            ->andReturn($responseMock);
+
+        $this->instance = new RemoteTemplateFinder(
+            $fileSystemMock,
+            $config,
+            $clientMock
+        );
+        $this->instance->setViewFilenameCallback(function ($url) {
+            return 'dong.blade.php';
+        });
+
+        $this->assertEquals('tests/specific/dong.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));
+    }
 }

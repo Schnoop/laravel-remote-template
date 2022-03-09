@@ -56,6 +56,11 @@ class RemoteTemplateFinder
     protected $templateUrlCallback;
 
     /**
+     * @var Closure
+     */
+    protected $viewFilenameCallback;
+
+    /**
      * Create a new file view loader instance.
      *
      * @param Filesystem $files
@@ -121,7 +126,7 @@ class RemoteTemplateFinder
         $url = $this->callModifyTemplateUrlCallback($url);
 
         $path = $this->getViewFolder($namespace);
-        $path .= Str::slug($url).'.blade.php';
+        $path .= $this->getViewFilename($url);
         if ($remoteHost['cache'] === true && $this->files->exists($path) === true) {
             return $path;
         }
@@ -362,5 +367,30 @@ class RemoteTemplateFinder
     public function setModifyTemplateUrlCallback(Closure $callback): void
     {
         $this->templateUrlCallback = $callback;
+    }
+
+    /**
+     * Set a callback that will be called to set the name of the view file.
+     *
+     * @param Closure $callback
+     */
+    public function setViewFilenameCallback(Closure $callback): void
+    {
+        $this->viewFilenameCallback = $callback;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return string
+     */
+    protected function getViewFilename(string $url): string
+    {
+        if ($this->viewFilenameCallback !== null
+            && \is_callable($this->viewFilenameCallback) === true
+        ) {
+            return \call_user_func($this->viewFilenameCallback, $url);
+        }
+        return Str::slug($url).'.blade.php';
     }
 }
