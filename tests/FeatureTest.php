@@ -69,7 +69,7 @@ class FeatureTest extends \Orchestra\Testbench\TestCase
         $this->app['config']->set('remote-view.hosts.default.host', 'http://www.google.com');
         $this->app->make('remoteview.finder')->pushResponseHandler(404,
             function (\GuzzleHttp\Psr7\Response $result, array $config, \Schnoop\RemoteTemplate\View\RemoteTemplateFinder $service) {
-                return 'This content has been modified through a response handler.';
+                return new \Illuminate\Http\Response('This content has been modified through a response handler.', 405);
             });
         $crawler = $this->call('GET', 'web/404');
         $crawler->assertSee('This content has been modified through a response handler.');

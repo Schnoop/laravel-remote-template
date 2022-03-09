@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Schnoop\RemoteTemplate\View;
 
@@ -16,7 +17,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
     /**
      * @var RemoteTemplateFinder
      */
-    private $remoteView;
+    private RemoteTemplateFinder $remoteView;
 
     /**
      * Create a new file view loader instance.
@@ -24,7 +25,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      * @param Filesystem $files
      * @param array $paths
      * @param RemoteTemplateFinder $remoteView
-     * @param array $extensions
+     * @param array|null $extensions
      */
     public function __construct(
         Filesystem $files,

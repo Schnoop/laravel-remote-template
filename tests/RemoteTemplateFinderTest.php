@@ -452,7 +452,7 @@ class RemoteTemplateFinderTest extends TestCase
             $clientMock
         );
         $this->instance->pushResponseHandler(404, function () {
-            return 'Blubb';
+            return new \Illuminate\Http\Response('Blubb', 404);
         });
 
         $this->assertEquals('tests/specific/daslamm.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));
@@ -495,7 +495,7 @@ class RemoteTemplateFinderTest extends TestCase
             $clientMock
         );
         $this->instance->pushResponseHandler([405], function () {
-            return 'Blubb';
+            return new \Illuminate\Http\Response('Blubb', 405);
         });
 
         $this->assertEquals('tests/specific/daslamm.blade.php', $this->instance->findRemotePathView('remote:specific::dasLamm'));

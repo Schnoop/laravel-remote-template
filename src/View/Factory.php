@@ -1,8 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Schnoop\RemoteTemplate\View;
 
 use Illuminate\Support\Str;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class Factory.
@@ -15,6 +18,8 @@ class Factory extends \Illuminate\View\Factory
      * @param string $name
      *
      * @return string
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function normalizeName($name): string
     {
