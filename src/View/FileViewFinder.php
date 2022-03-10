@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Schnoop\RemoteTemplate\View;
 
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Filesystem\Filesystem;
 use Schnoop\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
 use Schnoop\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
@@ -47,6 +48,7 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      * @throws RemoteTemplateNotFoundException
      * @throws RemoteHostNotConfiguredException
      * @throws UrlIsForbiddenException
+     * @throws GuzzleException
      */
     public function find($name): string
     {

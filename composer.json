@@ -2,7 +2,12 @@
   "name": "schnoop/laravel-remote-template",
   "type": "library",
   "description": "A Laravel package to fetch templates from a remote URL.",
-  "keywords": [],
+  "keywords": [
+    "laravel",
+    "blade",
+    "template",
+    "remote"
+  ],
   "homepage": "https://github.com/schnoop/laravel-remote-template",
   "license": "MIT",
   "authors": [

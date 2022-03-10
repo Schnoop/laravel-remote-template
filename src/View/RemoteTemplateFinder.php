@@ -33,22 +33,22 @@ class RemoteTemplateFinder
     /**
      * @var Client
      */
-    protected $client;
+    protected Client $client;
 
     /**
      * @var Repository
      */
-    protected $config;
+    protected Repository $config;
 
     /**
      * @var Closure[]
      */
-    protected $handler;
+    protected array $handler;
 
     /**
      * @var Filesystem
      */
-    protected $files;
+    protected Filesystem $files;
 
     /**
      * @var Closure
