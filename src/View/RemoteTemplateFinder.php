@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Schnoop\RemoteTemplate\View;
@@ -20,9 +21,6 @@ use Schnoop\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
 use Schnoop\RemoteTemplate\Exceptions\RemoteTemplateNotFoundException;
 use Schnoop\RemoteTemplate\Exceptions\UrlIsForbiddenException;
 
-/**
- * Class RemoteTemplateFinder.
- */
 class RemoteTemplateFinder
 {
     /**
@@ -31,24 +29,9 @@ class RemoteTemplateFinder
     protected $remotePathDelimiter;
 
     /**
-     * @var Client
-     */
-    protected Client $client;
-
-    /**
-     * @var Repository
-     */
-    protected Repository $config;
-
-    /**
      * @var Closure[]
      */
     protected array $handler;
-
-    /**
-     * @var Filesystem
-     */
-    protected Filesystem $files;
 
     /**
      * @var Closure
@@ -67,11 +50,11 @@ class RemoteTemplateFinder
      * @param Repository $config
      * @param Client $client
      */
-    public function __construct(Filesystem $files, Repository $config, Client $client)
-    {
-        $this->client = $client;
-        $this->files = $files;
-        $this->config = $config;
+    public function __construct(
+        protected Filesystem $files,
+        protected Repository $config,
+        protected Client $client
+    ) {
         $this->remotePathDelimiter = $this->config->get('remote-view.remote-delimiter');
     }
 
@@ -79,8 +62,6 @@ class RemoteTemplateFinder
      * Returns true if template is a remote resource.
      *
      * @param string $name Name of template
-     *
-     * @return bool
      */
     public function hasRemoteInformation(string $name): bool
     {
@@ -92,7 +73,6 @@ class RemoteTemplateFinder
      *
      * @param string $name Remote URL to fetch template from
      *
-     * @return string
      * @throws IgnoredUrlSuffixException
      * @throws RemoteTemplateNotFoundException
      * @throws RemoteHostNotConfiguredException
@@ -145,32 +125,59 @@ class RemoteTemplateFinder
     }
 
     /**
-     * Returns true if given url is forbidden.
+     * Fetch content from $url.
      *
-     * @param string $url
-     * @param array $remoteHost
-     *
-     * @return bool
+     * @throws GuzzleException
+     * @throws RemoteTemplateNotFoundException
      */
-    private function isForbiddenUrl(string $url, array $remoteHost): bool
-    {
-        $ignoreUrlSuffix = $this->config->get('remote-view.ignore-urls');
-        if (isset($remoteHost['ignore-urls']) === true && \is_array($remoteHost['ignore-urls']) === true) {
-            $ignoreUrlSuffix = array_merge($ignoreUrlSuffix, $remoteHost['ignore-urls']);
+    public function fetchContentFromRemoteHost(
+        string $url,
+        array $remoteHost
+    ): \Illuminate\Http\Response|Response|ResponseInterface {
+        $options = [
+            'http_errors' => false,
+        ];
+        if (isset($remoteHost['request_options']) === true) {
+            $options = array_merge($options, $remoteHost['request_options']);
         }
 
-        $parsedUrl = parse_url($url, PHP_URL_PATH);
+        try {
+            $result = $this->client->get($url, $options);
 
-        return \in_array(pathinfo($parsedUrl, PATHINFO_DIRNAME), $ignoreUrlSuffix, true)
-            || \in_array(pathinfo($parsedUrl, PATHINFO_BASENAME), $ignoreUrlSuffix, true);
+            return $this->callResponseHandler($result, $remoteHost);
+        } catch (Exception $e) {
+            throw new RemoteTemplateNotFoundException($url, 404);
+        }
+    }
+
+    /**
+     * Push a handler to the stack.
+     */
+    public function pushResponseHandler(array|int $statusCodes, callable $callback): void
+    {
+        foreach ((array) $statusCodes as $statusCode) {
+            $this->handler[$statusCode] = $callback;
+        }
+    }
+
+    /**
+     * Set a callback that will be called after template url has been set.
+     */
+    public function setModifyTemplateUrlCallback(Closure $callback): void
+    {
+        $this->templateUrlCallback = $callback;
+    }
+
+    /**
+     * Set a callback that will be called to set the name of the view file.
+     */
+    public function setViewFilenameCallback(Closure $callback): void
+    {
+        $this->viewFilenameCallback = $callback;
     }
 
     /**
      * Check for valid namespace.
-     *
-     * @param string $name
-     *
-     * @return bool
      */
     protected function hasNamespace(string $name): bool
     {
@@ -185,10 +192,6 @@ class RemoteTemplateFinder
 
     /**
      * Get the segments of a template with a named path.
-     *
-     * @param string $name
-     *
-     * @return array
      *
      * @throws InvalidArgumentException
      */
@@ -205,17 +208,15 @@ class RemoteTemplateFinder
     /**
      * Return array with remote host config.
      *
-     * @param string $namespace
-     *
-     * @return array
      * @throws RemoteHostNotConfiguredException
      */
     protected function getRemoteHost(string $namespace): array
     {
         $config = $this->config->get('remote-view.hosts');
         if (isset($config[$namespace]) === false) {
-            throw new RemoteHostNotConfiguredException('No remote host configured for namespace # '
-                .$namespace.'. Please check your remote-view.php config file.');
+            throw new RemoteHostNotConfiguredException(
+                'No remote host configured for namespace # '.$namespace.'. Please check your remote-view.php config file.'
+            );
         }
 
         return $config[$namespace];
@@ -223,11 +224,6 @@ class RemoteTemplateFinder
 
     /**
      * Returns true if given url is static.
-     *
-     * @param string $url
-     * @param array $remoteHost
-     *
-     * @return bool
      */
     protected function urlHasIgnoredSuffix(string $url, array $remoteHost): bool
     {
@@ -244,11 +240,6 @@ class RemoteTemplateFinder
 
     /**
      * Returns remote url for given $identifier.
-     *
-     * @param string $identifier
-     * @param array $remoteHost
-     *
-     * @return string
      */
     protected function getTemplateUrlForIdentifier(string $identifier, array $remoteHost): string
     {
@@ -256,7 +247,7 @@ class RemoteTemplateFinder
         if (isset($remoteHost['mapping'][$identifier]) === true) {
             $route = $remoteHost['mapping'][$identifier];
         }
-        if (strpos($route, '/') > 0) {
+        if (mb_strpos($route, '/') > 0) {
             return '/'.$route;
         }
 
@@ -265,17 +256,13 @@ class RemoteTemplateFinder
 
     /**
      * Call callback that will be called after template url has been set.
-     *
-     * @param string $url
-     *
-     * @return string
      */
     protected function callModifyTemplateUrlCallback(string $url): string
     {
         if ($this->templateUrlCallback !== null
             && \is_callable($this->templateUrlCallback) === true
         ) {
-            return \call_user_func($this->templateUrlCallback, $url);
+            return ($this->templateUrlCallback)($url);
         }
 
         return $url;
@@ -284,9 +271,6 @@ class RemoteTemplateFinder
     /**
      * Get folder where fetched views will be stored.
      *
-     * @param string $namespace
-     *
-     * @return string
      * @throws RuntimeException
      */
     protected function getViewFolder(string $namespace): string
@@ -303,40 +287,12 @@ class RemoteTemplateFinder
     }
 
     /**
-     * Fetch content from $url.
-     *
-     * @param string $url
-     * @param array $remoteHost
-     *
-     * @return \Illuminate\Http\Response|Response|ResponseInterface
-     * @throws GuzzleException
-     * @throws RemoteTemplateNotFoundException
-     */
-    public function fetchContentFromRemoteHost(string $url, array $remoteHost): \Illuminate\Http\Response|Response|ResponseInterface
-    {
-        $options = ['http_errors' => false];
-        if (isset($remoteHost['request_options']) === true) {
-            $options = array_merge($options, $remoteHost['request_options']);
-        }
-        try {
-            $result = $this->client->get($url, $options);
-
-            return $this->callResponseHandler($result, $remoteHost);
-        } catch (Exception $e) {
-            throw new RemoteTemplateNotFoundException($url, 404);
-        }
-    }
-
-    /**
      * Call handler if any defined.
-     *
-     * @param ResponseInterface $result
-     * @param array $remoteHost
-     *
-     * @return ResponseInterface|\Illuminate\Http\Response|Response
      */
-    protected function callResponseHandler(ResponseInterface $result, array $remoteHost): \Illuminate\Http\Response|Response|ResponseInterface
-    {
+    protected function callResponseHandler(
+        ResponseInterface $result,
+        array $remoteHost
+    ): \Illuminate\Http\Response|Response|ResponseInterface {
         if (isset($this->handler[$result->getStatusCode()]) === true
             && \is_callable($this->handler[$result->getStatusCode()]) === true
         ) {
@@ -346,51 +302,30 @@ class RemoteTemplateFinder
         return $result;
     }
 
-    /**
-     * Push a handler to the stack.
-     *
-     * @param array|int $statusCodes
-     * @param callable $callback
-     */
-    public function pushResponseHandler(array|int $statusCodes, callable $callback): void
-    {
-        foreach ((array) $statusCodes as $statusCode) {
-            $this->handler[$statusCode] = $callback;
-        }
-    }
-
-    /**
-     * Set a callback that will be called after template url has been set.
-     *
-     * @param Closure $callback
-     */
-    public function setModifyTemplateUrlCallback(Closure $callback): void
-    {
-        $this->templateUrlCallback = $callback;
-    }
-
-    /**
-     * Set a callback that will be called to set the name of the view file.
-     *
-     * @param Closure $callback
-     */
-    public function setViewFilenameCallback(Closure $callback): void
-    {
-        $this->viewFilenameCallback = $callback;
-    }
-
-    /**
-     * @param string $url
-     *
-     * @return string
-     */
     protected function getViewFilename(string $url): string
     {
         if ($this->viewFilenameCallback !== null
             && \is_callable($this->viewFilenameCallback) === true
         ) {
-            return \call_user_func($this->viewFilenameCallback, $url);
+            return ($this->viewFilenameCallback)($url);
         }
+
         return Str::slug($url).'.blade.php';
+    }
+
+    /**
+     * Returns true if given url is forbidden.
+     */
+    private function isForbiddenUrl(string $url, array $remoteHost): bool
+    {
+        $ignoreUrlSuffix = $this->config->get('remote-view.ignore-urls');
+        if (isset($remoteHost['ignore-urls']) === true && \is_array($remoteHost['ignore-urls']) === true) {
+            $ignoreUrlSuffix = array_merge($ignoreUrlSuffix, $remoteHost['ignore-urls']);
+        }
+
+        $parsedUrl = parse_url($url, PHP_URL_PATH);
+
+        return \in_array(pathinfo($parsedUrl, PATHINFO_DIRNAME), $ignoreUrlSuffix, true)
+            || \in_array(pathinfo($parsedUrl, PATHINFO_BASENAME), $ignoreUrlSuffix, true);
     }
 }

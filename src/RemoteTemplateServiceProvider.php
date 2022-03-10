@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Schnoop\RemoteTemplate;
@@ -12,15 +13,12 @@ use Schnoop\RemoteTemplate\View\Factory;
 use Schnoop\RemoteTemplate\View\FileViewFinder;
 use Schnoop\RemoteTemplate\View\RemoteTemplateFinder;
 
-/**
- * Class RemoteTemplateServiceProvider.
- */
 class RemoteTemplateServiceProvider extends ViewServiceProvider
 {
     /**
      * Bootstrap the application services.
      */
-    public function boot()
+    public function boot(): void
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -31,10 +29,8 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
 
     /**
      * Register the service provider.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->registerViewFinder();
 
@@ -47,10 +43,8 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
 
     /**
      * Register the view finder implementation.
-     *
-     * @return void
      */
-    public function registerViewFinder()
+    public function registerViewFinder(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/remote-view.php', 'remote-view');
 
@@ -62,24 +56,23 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
             );
         });
 
-        $this->app->bind('view.finder', function ($app) {
-            return new FileViewFinder(
+        $this->app->bind(
+            'view.finder',
+            fn ($app) => new FileViewFinder(
                 $app['files'],
                 $app['config']['view.paths'],
                 $app['remoteview.finder'],
                 null
-            );
-        });
+            )
+        );
     }
 
     /**
      * Create a new Factory Instance.
      *
-     * @param  EngineResolver $resolver
-     * @param  ViewFinderInterface $finder
-     * @param  Dispatcher $events
-     *
-     * @return Factory
+     * @param EngineResolver $resolver
+     * @param ViewFinderInterface $finder
+     * @param Dispatcher $events
      */
     protected function createFactory($resolver, $finder, $events): Factory
     {

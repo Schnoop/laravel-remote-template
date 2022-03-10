@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Schnoop\RemoteTemplate\View;
@@ -10,32 +11,20 @@ use Schnoop\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
 use Schnoop\RemoteTemplate\Exceptions\RemoteTemplateNotFoundException;
 use Schnoop\RemoteTemplate\Exceptions\UrlIsForbiddenException;
 
-/**
- * Class FileViewFinder.
- */
 class FileViewFinder extends \Illuminate\View\FileViewFinder
 {
     /**
-     * @var RemoteTemplateFinder
-     */
-    private RemoteTemplateFinder $remoteView;
-
-    /**
      * Create a new file view loader instance.
      *
-     * @param Filesystem $files
-     * @param array $paths
      * @param RemoteTemplateFinder $remoteView
-     * @param array|null $extensions
      */
     public function __construct(
         Filesystem $files,
         array $paths,
-        RemoteTemplateFinder $remoteView,
-        array $extensions = null
+        private RemoteTemplateFinder $remoteView,
+        ?array $extensions = null
     ) {
         parent::__construct($files, $paths, $extensions);
-        $this->remoteView = $remoteView;
     }
 
     /**
@@ -43,7 +32,6 @@ class FileViewFinder extends \Illuminate\View\FileViewFinder
      *
      * @param string $name
      *
-     * @return string
      * @throws IgnoredUrlSuffixException
      * @throws RemoteTemplateNotFoundException
      * @throws RemoteHostNotConfiguredException
