@@ -5,7 +5,7 @@ namespace Schnoop\RemoteTemplate\Tests;
 use Illuminate\Filesystem\Filesystem;
 use InvalidArgumentException;
 use Mockery as m;
-use PHPUnit\Framework\TestCase;
+use Orchestra\Testbench\TestCase;
 use Schnoop\RemoteTemplate\View\Factory;
 use Schnoop\RemoteTemplate\View\FileViewFinder;
 use Schnoop\RemoteTemplate\View\RemoteTemplateFinder;

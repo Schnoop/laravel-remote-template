@@ -51,6 +51,9 @@
     "prepare": [
       "@composer run post-autoload-dump"
     ],
+    "post-autoload-dump": [
+      "@php ./vendor/bin/testbench package:discover --ansi"
+    ],
     "test": [
       "@composer run prepare",
       "@php vendor/bin/phpunit -c ./ --color"

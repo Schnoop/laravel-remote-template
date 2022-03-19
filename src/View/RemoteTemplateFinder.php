@@ -23,8 +23,8 @@ use Schnoop\RemoteTemplate\Exceptions\UrlIsForbiddenException;
 class RemoteTemplateFinder
 {
     protected string $remotePathDelimiter;
-    protected ?Closure $templateUrlCallback;
-    protected ?Closure $viewFilenameCallback;
+    protected ?Closure $templateUrlCallback = null;
+    protected ?Closure $viewFilenameCallback = null;
 
     /** @var Closure[] */
     protected array $handler;
@@ -37,7 +37,7 @@ class RemoteTemplateFinder
         protected Repository $config,
         protected Client $client,
     ) {
-        $this->remotePathDelimiter = config('remote-view.remote-delimiter');
+        $this->remotePathDelimiter = config('remote-view.remote-delimiter', 'remote:');
     }
 
     /**

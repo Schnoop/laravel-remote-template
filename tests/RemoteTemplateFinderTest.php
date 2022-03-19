@@ -2,13 +2,14 @@
 
 namespace Schnoop\RemoteTemplate\Tests;
 
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Response as IlluminateResponse;
 use Mockery as m;
-use PHPUnit\Framework\TestCase;
+use Orchestra\Testbench\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Schnoop\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
 use Schnoop\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
