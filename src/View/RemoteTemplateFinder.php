@@ -9,6 +9,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Http\Response as IlluminateResponse;
 use Illuminate\Support\Str;
 use Illuminate\View\ViewFinderInterface;
 use InvalidArgumentException;
@@ -100,7 +101,7 @@ class RemoteTemplateFinder
 
         if ($content instanceof Response) {
             $content = $content->getBody()->getContents();
-        } elseif ($content instanceof \Illuminate\Http\Response) {
+        } elseif ($content instanceof IlluminateResponse) {
             $content = (string) $content->getContent();
         }
         $this->files->put($path, $content);
@@ -117,7 +118,7 @@ class RemoteTemplateFinder
     public function fetchContentFromRemoteHost(
         string $url,
         array $remoteHost,
-    ): \Illuminate\Http\Response|Response|ResponseInterface {
+    ): IlluminateResponse|Response|ResponseInterface {
         $options = [
             'http_errors' => false,
         ];
@@ -281,7 +282,7 @@ class RemoteTemplateFinder
     protected function callResponseHandler(
         ResponseInterface $result,
         array $remoteHost,
-    ): \Illuminate\Http\Response|Response|ResponseInterface {
+    ): IlluminateResponse|Response|ResponseInterface {
         if (isset($this->handler[$result->getStatusCode()])
             && is_callable($this->handler[$result->getStatusCode()])
         ) {
