@@ -1,7 +1,7 @@
 # Laravel Remote Template
 
 [![Latest Version](https://img.shields.io/github/release/schnoop/laravel-remote-template.svg?style=flat-square)](https://github.com/schnoop/laravel-remote-template/releases)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/schnoop/laravel-remote-template/Lint?label=code%20style)](https://github.com/schnoop/laravel-remote-template/actions?query=workflow%3A"Lint"+branch%3Amaster)
+[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/schnoop/laravel-remote-template/lint?label=code%20style)](https://github.com/schnoop/laravel-remote-template/actions?query=workflow%3Alint+branch%3Adevelop)
 [![Total Downloads](https://img.shields.io/packagist/dt/schnoop/laravel-remote-template.svg?style=flat-square)](https://packagist.org/packages/schnoop/laravel-remote-template)
 
 `laravel-remote-template` is a package for fetching blade templates from a remote URL.
