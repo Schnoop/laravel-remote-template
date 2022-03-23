@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Schnoop\RemoteTemplate\Support\DefaultBladeFilename;
 use Schnoop\RemoteTemplate\Support\DefaultUrlModifier;
