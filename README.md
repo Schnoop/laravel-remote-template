@@ -231,31 +231,56 @@ Now, for any requests made to routes not defined in the application, a request w
 
 Someday, you will have the case, that you would like to force the remote host to render the template based on a state in your Laravel application. A very common case is definitely to change the navigation if a user is authenticated.
 
-To achieve this, we have a callback that will be triggered right before the call to the remote host happens:
+To achieve this, you can implement your own URL modifier class and use it instead of the default one. Therefore you need to publish the config file if you haven't done already.
+Change the class that is mapped to the "url_modifier" key and you are ready to go.
 
 ```php
-$this->app->make('remoteview.finder')->setModifyTemplateUrlCallback(function ($url) {
-    return $url;
-});
+    //'url_modifier' => DefaultUrlModifier::class,
+    'url_modifier' => MySuperDuperUrlModifier::class,
 ```
 
-In this callback, you have the chance to modify the request url as needed to tell the remote host to change its template rendering:
+Your modifier class needs to implement the "determine" method: 
 
 ```php
-$this->app->make('remoteview.finder')->setModifyTemplateUrlCallback(function ($url) {
-    $glue = '?';
-    if (strpos($url, $glue) !== false) {
-        $glue = '&';
+<?php
+
+namespace Schnoop\RemoteTemplate\Support;
+
+class MySuperDuperUrlModifier
+{
+    public function determine(string $url): string
+    {
+        return $url . '-superduper-whatever';
     }
+}
 
-    if (Auth::check() === true) {
-        $url .= $glue . 'login=true';
+```
+
+## Change the naming of the stored .blade.php file
+After the content is downloaded from the remote server, it is stored in a *.blade.php file.
+Per default the file name is a slugify version of the remote url it has been fetched from. If, for whatever reason, you would like to change this behaviour you can changed it like this:
+Change the class that is mapped to the "blade_modifier" key in your remote-view.php config file:
+
+```php
+    //'blade_modifier' => DefaultBladeFilename::class,
+    'blade_modifier' => MySuperDuperBladeFilename::class,
+```
+
+Your modifier class needs to implement the "determine" method:
+
+```php
+<?php
+
+namespace Schnoop\RemoteTemplate\Support;
+
+class MySuperDuperBladeFilename
+{
+    public function determine(string $url): string
+    {
+        return $url . '-superduper-whatever.blade.php';
     }
+}
 
-    // ..... following by more role checks e.g.
-
-    return $url;
-});
 ```
 
 ## Push response handlers
