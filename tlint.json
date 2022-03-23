@@ -1,0 +1,4 @@
+{
+    "preset": "Chiiya\\LaravelCodeStyle\\TLintPreset",
+  "excluded": [".ddev", "storage", "tests", "_ide_helper.php", ".phpstorm.meta.php"]
+}

@@ -1,6 +1,7 @@
 <?php
 
-declare(strict_types=1);
+use Schnoop\RemoteTemplate\Support\DefaultBladeFilename;
+use Schnoop\RemoteTemplate\Support\DefaultUrlModifier;
 
 return [
     'guzzle-config' => [
@@ -8,6 +9,10 @@ return [
         'timeout' => 5,
         'connect_timeout' => 5,
     ],
+
+    'url_modifier' => DefaultUrlModifier::class,
+
+    'blade_modifier' => DefaultBladeFilename::class,
 
     'remote-delimiter' => 'remote:',
 
