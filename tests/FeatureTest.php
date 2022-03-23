@@ -1,18 +1,47 @@
-<?php
+<?php declare(strict_types=1);
 
+namespace Schnoop\RemoteTemplate\Tests;
+
+use GuzzleHttp\Psr7\Response;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\Response as IlluminateResponse;
 use Illuminate\Routing\Router;
+use Orchestra\Testbench\TestCase;
+use Schnoop\RemoteTemplate\View\RemoteTemplateFinder;
 
-/**
- * Class FeatureTest.
- */
-class FeatureTest extends \Orchestra\Testbench\TestCase
+class FeatureTest extends TestCase
 {
+    public function test_response_ok(): void
+    {
+        $crawler = $this->call('GET', 'web/200');
+        $crawler->assertStatus(200);
+    }
+
+    public function test_response_is500_if_domain_not_found(): void
+    {
+        $this->app['config']->set('remote-view.hosts.default.host', 'http://www.googlasdade.com');
+        $crawler = $this->call('GET', 'web/200');
+        $crawler->assertStatus(500);
+    }
+
+    public function test_response_handler_if_response_is404(): void
+    {
+        $this->app['config']->set('remote-view.hosts.default.host', 'http://www.google.com');
+        $this->app->make('remoteview.finder')->pushResponseHandler(
+            404,
+            fn (Response $result, array $config, RemoteTemplateFinder $service) => new IlluminateResponse(
+                'This content has been modified through a response handler.',
+                405,
+            ),
+        );
+        $crawler = $this->call('GET', 'web/404');
+        $crawler->assertSee('This content has been modified through a response handler.');
+    }
+
     /**
-     * @param \Illuminate\Foundation\Application $app
-     *
-     * @return array
+     * @param Application $app
      */
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return ['Schnoop\RemoteTemplate\RemoteTemplateServiceProvider'];
     }
@@ -20,58 +49,25 @@ class FeatureTest extends \Orchestra\Testbench\TestCase
     /**
      * Define environment setup.
      *
-     * @param Illuminate\Foundation\Application $app
-     *
-     * @return void
+     * @param Application $app
      */
-    protected function getEnvironmentSetUp($app)
+    protected function getEnvironmentSetUp($app): void
     {
-        $app['config']->set('view.paths', [realpath(('tests/views'))]);
+        $app['config']->set('view.paths', [realpath('tests/views')]);
         $app['config']->set('remote-view.hosts.default.host', 'http://www.google.com');
         $router = $app['router'];
         $this->addWebRoutes($router);
     }
 
-    /**
-     * @param Router $router
-     */
-    protected function addWebRoutes(Router $router)
+    protected function addWebRoutes(Router $router): void
     {
         $router->get('web/200', [
             'as' => 'web.200',
-            'uses' => function () {
-                return view('200');
-            },
+            'uses' => fn () => view('200'),
         ]);
         $router->get('web/404', [
             'as' => 'web.404',
-            'uses' => function () {
-                return view('404');
-            },
+            'uses' => fn () => view('404'),
         ]);
-    }
-
-    public function testResponseOk()
-    {
-        $crawler = $this->call('GET', 'web/200');
-        $crawler->assertStatus(200);
-    }
-
-    public function testResponseIs500IfDomainNotFound()
-    {
-        $this->app['config']->set('remote-view.hosts.default.host', 'http://www.googlasdade.com');
-        $crawler = $this->call('GET', 'web/200');
-        $crawler->assertStatus(500);
-    }
-
-    public function testResponseHandlerIfResponseIs404()
-    {
-        $this->app['config']->set('remote-view.hosts.default.host', 'http://www.google.com');
-        $this->app->make('remoteview.finder')->pushResponseHandler(404,
-            function (\GuzzleHttp\Psr7\Response $result, array $config, \Schnoop\RemoteTemplate\View\RemoteTemplateFinder $service) {
-                return new \Illuminate\Http\Response('This content has been modified through a response handler.', 405);
-            });
-        $crawler = $this->call('GET', 'web/404');
-        $crawler->assertSee('This content has been modified through a response handler.');
     }
 }

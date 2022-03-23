@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Schnoop\RemoteTemplate;
 
@@ -33,11 +31,8 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
     public function register(): void
     {
         $this->registerViewFinder();
-
         $this->registerFactory();
-
         $this->registerBladeCompiler();
-
         $this->registerEngineResolver();
     }
 
@@ -52,7 +47,7 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
             return new RemoteTemplateFinder(
                 $app['files'],
                 $app['config'],
-                new Client($app['config']['remote-view.guzzle-config'])
+                new Client($app['config']['remote-view.guzzle-config']),
             );
         });
 
@@ -62,8 +57,8 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
                 $app['files'],
                 $app['config']['view.paths'],
                 $app['remoteview.finder'],
-                null
-            )
+                null,
+            ),
         );
     }
 
