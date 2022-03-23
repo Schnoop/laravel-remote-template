@@ -17,15 +17,16 @@
     }
   ],
   "require": {
-    "php": "^8.0.2",
+    "php": "^8.1",
+    "illuminate/contracts": "^9.0",
     "laravel/framework": "^9.2",
     "guzzlehttp/guzzle": "^7.2"
   },
   "require-dev": {
-    "chiiya/code-style-php": "^1.3",
-    "mockery/mockery": "^1.4.4",
-    "orchestra/testbench": "^7.0",
-    "phpunit/phpunit": "^9.5.10"
+    "chiiya/laravel-code-style": "^1.7",
+    "mockery/mockery": "^1.5",
+    "orchestra/testbench": "^7.1",
+    "phpunit/phpunit": "^9.5"
   },
   "autoload": {
     "psr-4": {
@@ -40,18 +41,28 @@
   "config": {
     "preferred-install": "dist",
     "sort-packages": true,
-    "optimize-autoloader": true
+    "optimize-autoloader": true,
+    "allow-plugins": {
+      "phpro/grumphp": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
   },
   "scripts": {
     "prepare": [
       "@composer run post-autoload-dump"
     ],
+    "post-autoload-dump": [
+      "@php ./vendor/bin/testbench package:discover --ansi"
+    ],
     "test": [
       "@composer run prepare",
       "@php vendor/bin/phpunit -c ./ --color"
     ],
-    "post-autoload-dump": [
-      "@php vendor/bin/testbench package:discover --ansi"
+    "lint": [
+      "@php vendor/bin/ecs check --fix",
+      "@php vendor/bin/php-cs-fixer fix",
+      "@php vendor/bin/rector process",
+      "@php vendor/bin/tlint lint"
     ]
   },
   "extra": {

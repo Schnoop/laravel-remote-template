@@ -1,14 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Schnoop\RemoteTemplate\View;
 
 use Illuminate\Support\Str;
+use Illuminate\View\Factory as LaravelFactory;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
-class Factory extends \Illuminate\View\Factory
+class Factory extends LaravelFactory
 {
     /**
      * Normalize a view name.
@@ -22,7 +21,7 @@ class Factory extends \Illuminate\View\Factory
     {
         $delimiter = $this->container->get('config')->get('remote-view.remote-delimiter');
 
-        if (Str::startsWith($name, $delimiter) === false) {
+        if (! Str::startsWith($name, $delimiter)) {
             return parent::normalizeName($name);
         }
 
