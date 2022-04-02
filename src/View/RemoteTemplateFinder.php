@@ -16,11 +16,12 @@ use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use Schnoop\RemoteTemplate\Exceptions\IgnoredUrlSuffixException;
+use Schnoop\RemoteTemplate\Exceptions\InvalidUrlModifierException;
 use Schnoop\RemoteTemplate\Exceptions\RemoteHostNotConfiguredException;
 use Schnoop\RemoteTemplate\Exceptions\RemoteTemplateNotFoundException;
 use Schnoop\RemoteTemplate\Exceptions\UrlIsForbiddenException;
+use Schnoop\RemoteTemplate\Support\AbstractUrlModifier;
 use Schnoop\RemoteTemplate\Support\DefaultBladeFilename;
-use Schnoop\RemoteTemplate\Support\DefaultUrlModifier;
 
 class RemoteTemplateFinder
 {
@@ -59,7 +60,7 @@ class RemoteTemplateFinder
      * @throws RemoteTemplateNotFoundException
      * @throws RemoteHostNotConfiguredException
      * @throws UrlIsForbiddenException
-     * @throws GuzzleException
+     * @throws GuzzleException|InvalidUrlModifierException
      */
     public function findRemotePathView(string $name): string
     {
@@ -86,7 +87,22 @@ class RemoteTemplateFinder
         }
 
         $url = $this->getTemplateUrlForIdentifier($name, $remoteHost);
-        $url = app(config('remote-view.url_modifier', DefaultUrlModifier::class))->determine($url);
+
+        foreach (config('remote-view.url_modifier', []) as $urlModifierClass) {
+            $modifierInstance = app($urlModifierClass);
+
+            if (! $modifierInstance instanceof AbstractUrlModifier) {
+                throw new InvalidUrlModifierException;
+            }
+
+            if ($modifierInstance->applicable()) {
+                $url .= $modifierInstance->getQueryString();
+            }
+
+            if ($modifierInstance->breakTheCycle()) {
+                break;
+            }
+        }
 
         $path = $this->getViewFolder($namespace);
         $path .= app(config('remote-view.blade_modifier', DefaultBladeFilename::class))->determine($url);

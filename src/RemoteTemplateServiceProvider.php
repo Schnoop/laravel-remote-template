@@ -7,6 +7,7 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\ViewFinderInterface;
 use Illuminate\View\ViewServiceProvider;
+use Schnoop\RemoteTemplate\Commands\WarmupTemplates;
 use Schnoop\RemoteTemplate\View\Factory;
 use Schnoop\RemoteTemplate\View\FileViewFinder;
 use Schnoop\RemoteTemplate\View\RemoteTemplateFinder;
@@ -34,6 +35,7 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
         $this->registerFactory();
         $this->registerBladeCompiler();
         $this->registerEngineResolver();
+        $this->commands(WarmupTemplates::class);
     }
 
     /**
