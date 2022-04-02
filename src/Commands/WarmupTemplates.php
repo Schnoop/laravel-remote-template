@@ -2,6 +2,7 @@
 
 namespace Schnoop\RemoteTemplate\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 
 class WarmupTemplates extends Command
@@ -28,15 +29,15 @@ class WarmupTemplates extends Command
     public function handle(): int
     {
         $fileViewFinder = app('view.finder');
+
         foreach (config('remote-view.hosts') as $host => $config) {
             foreach ($config['mapping'] as $name => $url) {
                 try {
-                    $result = $fileViewFinder->find('remote:' . $host . '::' . $name);
+                    $result = $fileViewFinder->find('remote:'.$host.'::'.$name);
                     $this->comment($result);
-                } catch (\Exception $e) {
+                } catch (Exception) {
                     $this->error('Das war nix.');
                 }
-
             }
         }
 
