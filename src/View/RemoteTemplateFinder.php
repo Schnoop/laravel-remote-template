@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Schnoop\RemoteTemplate\View;
 
@@ -118,7 +120,7 @@ class RemoteTemplateFinder
     public function fetchContentFromRemoteHost(
         string $url,
         array $remoteHost,
-    ): IlluminateResponse|Response|ResponseInterface {
+    ): IlluminateResponse|Response|ResponseInterface|string {
         $options = [
             'http_errors' => false,
         ];
@@ -252,7 +254,7 @@ class RemoteTemplateFinder
     protected function callResponseHandler(
         ResponseInterface $result,
         array $remoteHost,
-    ): IlluminateResponse|Response|ResponseInterface {
+    ): IlluminateResponse|Response|ResponseInterface|string {
         if (isset($this->handler[$result->getStatusCode()])
             && is_callable($this->handler[$result->getStatusCode()])
         ) {
