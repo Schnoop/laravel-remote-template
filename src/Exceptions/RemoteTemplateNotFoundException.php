@@ -7,26 +7,12 @@ use Throwable;
 
 class RemoteTemplateNotFoundException extends Exception
 {
-
-    /**
-     * @var string
-     */
-    protected string $response;
-
-    /**
-     * @param string $message
-     * @param int $code
-     * @param string $response
-     * @param Throwable|null $previous
-     */
     public function __construct(
-        string     $message,
-        int        $code,
-        string     $response,
-        ?Throwable $previous
-    )
-    {
-        $this->response = $response;
+        string $message,
+        int $code,
+        protected string $response,
+        ?Throwable $previous,
+    ) {
         parent::__construct($message, $code, $previous);
     }
 

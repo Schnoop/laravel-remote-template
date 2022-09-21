@@ -133,9 +133,14 @@ class RemoteTemplateFinder
 
             return $this->callResponseHandler($result, $remoteHost);
         } catch (ClientException $e) {
-            throw new RemoteTemplateNotFoundException($url, 404, $e->getResponse()->getBody()->getContents(), $e->getPrevious());
-        } catch (Exception) {
-            throw new RemoteTemplateNotFoundException($url, 404);
+            throw new RemoteTemplateNotFoundException(
+                $url,
+                404,
+                $e->getResponse()->getBody()->getContents(),
+                $e->getPrevious(),
+            );
+        } catch (Exception $e) {
+            throw new RemoteTemplateNotFoundException($url, 404, '', $e->getPrevious());
         }
     }
 
