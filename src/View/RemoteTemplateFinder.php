@@ -5,6 +5,7 @@ namespace Schnoop\RemoteTemplate\View;
 use Closure;
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Contracts\Config\Repository;
@@ -131,6 +132,8 @@ class RemoteTemplateFinder
             $result = $this->client->get($url, $options);
 
             return $this->callResponseHandler($result, $remoteHost);
+        } catch (ClientException $e) {
+            throw new RemoteTemplateNotFoundException($url, 404, $e->getResponse()->getBody()->getContents(), $e->getPrevious());
         } catch (Exception) {
             throw new RemoteTemplateNotFoundException($url, 404);
         }
