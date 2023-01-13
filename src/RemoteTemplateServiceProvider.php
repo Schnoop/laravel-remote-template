@@ -43,7 +43,7 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/remote-view.php', 'remote-view');
 
-        $this->app->singleton(
+        $this->app->bind(
             'remoteview.finder.client',
             fn ($app) => new Client($app['config']['remote-view.guzzle-config']),
         );
