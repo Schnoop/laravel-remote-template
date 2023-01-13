@@ -47,7 +47,7 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
             'remoteview.finder.client',
             fn ($app) => new Client($app['config']['remote-view.guzzle-config']),
         );
-        
+
         $this->app->singleton(
             'remoteview.finder',
             fn ($app) => new RemoteTemplateFinder($app['files'], $app['config'], $app['remoteview.finder.client']),
