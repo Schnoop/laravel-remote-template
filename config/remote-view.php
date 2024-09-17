@@ -1,7 +1,6 @@
 <?php declare(strict_types=1);
 
 use Schnoop\RemoteTemplate\Support\DefaultBladeFilename;
-use Schnoop\RemoteTemplate\Support\DefaultUrlModifier;
 
 return [
     'guzzle-config' => [
@@ -10,7 +9,7 @@ return [
         'connect_timeout' => 5,
     ],
 
-    'url_modifier' => DefaultUrlModifier::class,
+    'url_modifier' => [],
 
     'blade_modifier' => DefaultBladeFilename::class,
 
@@ -25,12 +24,15 @@ return [
     'hosts' => [
         'default' => [
             'cache' => false,
-            'host' => 'https://www.your-first-content-domain.tld',
+            'host' => 'https://www.sportschau.de',
             'request_options' => [
                 'auth_user' => '',
                 'auth_password' => '',
             ],
-            'mapping' => [],
+            'mapping' => [
+                '403' => '/fussball/fifa-wm-2022/wm-katar-auslosung-deutschland-gegner-100.html',
+                '404' => '/fussball/fifa-wm-2022/audio-dfb-team-so-lief-die-qualifikation-zur-wm-in-katar-100.html',
+            ],
         ],
 
         'specific' => [
