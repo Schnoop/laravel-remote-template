@@ -4,6 +4,4 @@ namespace Schnoop\RemoteTemplate\Exceptions;
 
 use Exception;
 
-class UrlIsForbiddenException extends Exception
-{
-}
+class UrlIsForbiddenException extends Exception {}

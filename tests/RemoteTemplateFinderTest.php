@@ -328,48 +328,48 @@ class RemoteTemplateFinderTest extends TestCase
         );
     }
 
-//    public function test_with_modify_template_url_callback(): void
-//    {
-//        $hosts = [
-//            'specific' => [
-//                'cache' => false,
-//                'host' => 'http://foo.bar',
-//                'request_options' => [
-//                    'auth_user' => 't',
-//                    'auth_password' => '',
-//                ],
-//            ],
-//        ];
-//
-//        $config = $this->getConfigMock();
-//        $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
-//        $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
-//        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn([]);
-//        $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
-//
-//        $responseMock = m::mock(Response::class);
-//        $responseMock->shouldReceive('getStatusCode')->andReturn(200);
-//        $responseMock->shouldReceive('getBody->getContents')->andReturn('MyContent');
-//
-//        $fileSystemMock = $this->getFilesystemMock();
-//        $fileSystemMock->shouldReceive('exists')->with('tests/specific/daslamm.blade.php')->andReturn(true);
-//        $fileSystemMock->shouldReceive('put')->with('tests/specific/hurz.blade.php', 'MyContent');
-//
-//        $clientMock = m::mock(Client::class);
-//        $clientMock->shouldReceive('get')->with(
-//            'http://foo.bar/hurz',
-//            ['auth_user' => 't', 'auth_password' => '', 'http_errors' => false],
-//        )
-//            ->andReturn($responseMock);
-//
-//        $this->instance = new RemoteTemplateFinder($fileSystemMock, $config, $clientMock);
-//        $this->instance->setModifyTemplateUrlCallback(fn ($url) => 'hurz');
-//
-//        $this->assertSame(
-//            'tests/specific/hurz.blade.php',
-//            $this->instance->findRemotePathView('remote:specific::dasLamm'),
-//        );
-//    }
+    //    public function test_with_modify_template_url_callback(): void
+    //    {
+    //        $hosts = [
+    //            'specific' => [
+    //                'cache' => false,
+    //                'host' => 'http://foo.bar',
+    //                'request_options' => [
+    //                    'auth_user' => 't',
+    //                    'auth_password' => '',
+    //                ],
+    //            ],
+    //        ];
+    //
+    //        $config = $this->getConfigMock();
+    //        $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
+    //        $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+    //        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn([]);
+    //        $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
+    //
+    //        $responseMock = m::mock(Response::class);
+    //        $responseMock->shouldReceive('getStatusCode')->andReturn(200);
+    //        $responseMock->shouldReceive('getBody->getContents')->andReturn('MyContent');
+    //
+    //        $fileSystemMock = $this->getFilesystemMock();
+    //        $fileSystemMock->shouldReceive('exists')->with('tests/specific/daslamm.blade.php')->andReturn(true);
+    //        $fileSystemMock->shouldReceive('put')->with('tests/specific/hurz.blade.php', 'MyContent');
+    //
+    //        $clientMock = m::mock(Client::class);
+    //        $clientMock->shouldReceive('get')->with(
+    //            'http://foo.bar/hurz',
+    //            ['auth_user' => 't', 'auth_password' => '', 'http_errors' => false],
+    //        )
+    //            ->andReturn($responseMock);
+    //
+    //        $this->instance = new RemoteTemplateFinder($fileSystemMock, $config, $clientMock);
+    //        $this->instance->setModifyTemplateUrlCallback(fn ($url) => 'hurz');
+    //
+    //        $this->assertSame(
+    //            'tests/specific/hurz.blade.php',
+    //            $this->instance->findRemotePathView('remote:specific::dasLamm'),
+    //        );
+    //    }
 
     public function test_with_response_handler(): void
     {
@@ -502,48 +502,48 @@ class RemoteTemplateFinderTest extends TestCase
         $this->instance->findRemotePathView('remote:typo3');
     }
 
-//    public function test_with_different_view_file(): void
-//    {
-//        $hosts = [
-//            'specific' => [
-//                'cache' => false,
-//                'host' => 'http://foo.bar',
-//                'request_options' => [
-//                    'auth_user' => 't',
-//                    'auth_password' => '',
-//                ],
-//            ],
-//        ];
-//
-//        $config = $this->getConfigMock();
-//        $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
-//        $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
-//        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn([]);
-//        $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
-//
-//        $responseMock = m::mock(Response::class);
-//        $responseMock->shouldReceive('getStatusCode')->andReturn(200);
-//        $responseMock->shouldReceive('getBody->getContents')->andReturn('MyContent');
-//
-//        $fileSystemMock = $this->getFilesystemMock();
-//        $fileSystemMock->shouldReceive('exists')->with('tests/specific/dong.blade.php')->andReturn(true);
-//        $fileSystemMock->shouldReceive('put')->with('tests/specific/dong.blade.php', 'MyContent');
-//
-//        $clientMock = m::mock(Client::class);
-//        $clientMock->shouldReceive('get')->with(
-//            'http://foo.bar/dasLamm',
-//            ['auth_user' => 't', 'auth_password' => '', 'http_errors' => false],
-//        )
-//            ->andReturn($responseMock);
-//
-//        $this->instance = new RemoteTemplateFinder($fileSystemMock, $config, $clientMock);
-//        $this->instance->setViewFilenameCallback(fn ($url) => 'dong.blade.php');
-//
-//        $this->assertSame(
-//            'tests/specific/dong.blade.php',
-//            $this->instance->findRemotePathView('remote:specific::dasLamm'),
-//        );
-//    }
+    //    public function test_with_different_view_file(): void
+    //    {
+    //        $hosts = [
+    //            'specific' => [
+    //                'cache' => false,
+    //                'host' => 'http://foo.bar',
+    //                'request_options' => [
+    //                    'auth_user' => 't',
+    //                    'auth_password' => '',
+    //                ],
+    //            ],
+    //        ];
+    //
+    //        $config = $this->getConfigMock();
+    //        $config->shouldReceive('get')->with('remote-view.hosts')->andReturn($hosts);
+    //        $config->shouldReceive('get')->with('remote-view.ignore-url-suffix')->andReturn([]);
+    //        $config->shouldReceive('get')->with('remote-view.ignore-urls')->andReturn([]);
+    //        $config->shouldReceive('get')->with('remote-view.view-folder')->andReturn('tests/');
+    //
+    //        $responseMock = m::mock(Response::class);
+    //        $responseMock->shouldReceive('getStatusCode')->andReturn(200);
+    //        $responseMock->shouldReceive('getBody->getContents')->andReturn('MyContent');
+    //
+    //        $fileSystemMock = $this->getFilesystemMock();
+    //        $fileSystemMock->shouldReceive('exists')->with('tests/specific/dong.blade.php')->andReturn(true);
+    //        $fileSystemMock->shouldReceive('put')->with('tests/specific/dong.blade.php', 'MyContent');
+    //
+    //        $clientMock = m::mock(Client::class);
+    //        $clientMock->shouldReceive('get')->with(
+    //            'http://foo.bar/dasLamm',
+    //            ['auth_user' => 't', 'auth_password' => '', 'http_errors' => false],
+    //        )
+    //            ->andReturn($responseMock);
+    //
+    //        $this->instance = new RemoteTemplateFinder($fileSystemMock, $config, $clientMock);
+    //        $this->instance->setViewFilenameCallback(fn ($url) => 'dong.blade.php');
+    //
+    //        $this->assertSame(
+    //            'tests/specific/dong.blade.php',
+    //            $this->instance->findRemotePathView('remote:specific::dasLamm'),
+    //        );
+    //    }
 
     /**
      * @return m\MockInterface
