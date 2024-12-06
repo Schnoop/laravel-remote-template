@@ -23,7 +23,7 @@
     "guzzlehttp/guzzle": "^7.2"
   },
   "require-dev": {
-    "chiiya/laravel-code-style": "^1.7",
+    "chiiya/laravel-code-style": "^3.0",
     "mockery/mockery": "^1.5",
     "orchestra/testbench": "^8.0",
     "phpunit/phpunit": "^10.0"
