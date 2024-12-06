@@ -25,7 +25,7 @@
   "require-dev": {
     "chiiya/laravel-code-style": "^3.0",
     "mockery/mockery": "^1.5",
-    "orchestra/testbench": "^8.0",
+    "orchestra/testbench": "^9.0",
     "phpunit/phpunit": "^10.0"
   },
   "autoload": {
