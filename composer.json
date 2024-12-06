@@ -18,8 +18,8 @@
   ],
   "require": {
     "php": "^8.2",
-    "illuminate/contracts": "^10.0",
-    "laravel/framework": "^10.0",
+    "illuminate/contracts": "^11.0",
+    "laravel/framework": "^11.0",
     "guzzlehttp/guzzle": "^7.2"
   },
   "require-dev": {
