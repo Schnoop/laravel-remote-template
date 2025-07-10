@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Schnoop\RemoteTemplate\View;
 
@@ -21,7 +23,7 @@ class Factory extends LaravelFactory
     {
         $delimiter = $this->container->get('config')->get('remote-view.remote-delimiter');
 
-        if (! Str::startsWith($name, $delimiter)) {
+        if (!Str::startsWith($name, $delimiter)) {
             return parent::normalizeName($name);
         }
 

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use Chiiya\CodeStyle\CodeStyle;
 use Rector\Config\RectorConfig;
