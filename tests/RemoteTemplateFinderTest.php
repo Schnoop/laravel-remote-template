@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Schnoop\RemoteTemplate\Tests;
 
@@ -156,7 +154,7 @@ class RemoteTemplateFinderTest extends TestCase
         $hosts = [
             'specific' => [
                 'cache' => false,
-                'host'  => 'http://foo.bar',
+                'host' => 'http://foo.bar',
             ],
         ];
 
@@ -190,7 +188,7 @@ class RemoteTemplateFinderTest extends TestCase
         $hosts = [
             'specific' => [
                 'cache' => false,
-                'host'  => 'http://foo.bar',
+                'host' => 'http://foo.bar',
             ],
         ];
 
@@ -225,7 +223,7 @@ class RemoteTemplateFinderTest extends TestCase
         $hosts = [
             'specific' => [
                 'cache' => false,
-                'host'  => 'http://foo.bar',
+                'host' => 'http://foo.bar',
             ],
         ];
 
@@ -260,7 +258,7 @@ class RemoteTemplateFinderTest extends TestCase
         $hosts = [
             'specific' => [
                 'cache' => false,
-                'host'  => 'http://foo.bar',
+                'host' => 'http://foo.bar',
             ],
         ];
 
@@ -292,10 +290,10 @@ class RemoteTemplateFinderTest extends TestCase
     {
         $hosts = [
             'specific' => [
-                'cache'           => false,
-                'host'            => 'http://foo.bar',
+                'cache' => false,
+                'host' => 'http://foo.bar',
                 'request_options' => [
-                    'auth_user'     => 't',
+                    'auth_user' => 't',
                     'auth_password' => '',
                 ],
             ],
@@ -377,10 +375,10 @@ class RemoteTemplateFinderTest extends TestCase
     {
         $hosts = [
             'specific' => [
-                'cache'           => false,
-                'host'            => 'http://foo.bar',
+                'cache' => false,
+                'host' => 'http://foo.bar',
                 'request_options' => [
-                    'auth_user'     => 't',
+                    'auth_user' => 't',
                     'auth_password' => '',
                 ],
             ],
@@ -420,10 +418,10 @@ class RemoteTemplateFinderTest extends TestCase
     {
         $hosts = [
             'specific' => [
-                'cache'           => false,
-                'host'            => 'http://foo.bar',
+                'cache' => false,
+                'host' => 'http://foo.bar',
                 'request_options' => [
-                    'auth_user'     => 't',
+                    'auth_user' => 't',
                     'auth_password' => '',
                 ],
             ],
