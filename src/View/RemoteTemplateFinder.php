@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Schnoop\RemoteTemplate\View;
 
@@ -195,7 +193,7 @@ class RemoteTemplateFinder
     {
         $config = $this->config->get('remote-view.hosts');
 
-        if (!isset($config[$namespace])) {
+        if (! isset($config[$namespace])) {
             throw new RemoteHostNotConfiguredException(
                 'No remote host configured for namespace # '.$namespace.'. Please check your remote-view.php config file.',
             );
@@ -249,7 +247,7 @@ class RemoteTemplateFinder
         $path = $this->config->get('remote-view.view-folder');
         $path = rtrim($path, '/').'/'.$namespace.'/';
 
-        if (!is_dir($path) && (!mkdir($path, 0o777, true) && !is_dir($path))) {
+        if (! is_dir($path) && (! mkdir($path, 0o777, true) && ! is_dir($path))) {
             throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
         }
 
