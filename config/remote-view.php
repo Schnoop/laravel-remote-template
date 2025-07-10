@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use Schnoop\RemoteTemplate\Support\DefaultBladeFilename;
 use Schnoop\RemoteTemplate\Support\DefaultUrlModifier;
@@ -6,7 +8,7 @@ use Schnoop\RemoteTemplate\Support\DefaultUrlModifier;
 return [
     'guzzle-config' => [
         'allow_redirects' => false,
-        'timeout' => 5,
+        'timeout'         => 5,
         'connect_timeout' => 5,
     ],
 
@@ -24,18 +26,18 @@ return [
 
     'hosts' => [
         'default' => [
-            'cache' => false,
-            'host' => 'https://www.your-first-content-domain.tld',
+            'cache'           => false,
+            'host'            => 'https://www.your-first-content-domain.tld',
             'request_options' => [
-                'auth_user' => '',
+                'auth_user'     => '',
                 'auth_password' => '',
             ],
             'mapping' => [],
         ],
 
         'specific' => [
-            'cache' => false,
-            'host' => 'https://www.your-second-content-domain.tld',
+            'cache'           => false,
+            'host'            => 'https://www.your-second-content-domain.tld',
             'request_options' => [
                 'auth' => ['', '', ''],
             ],

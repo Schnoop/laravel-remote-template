@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Schnoop\RemoteTemplate;
 
@@ -67,9 +69,9 @@ class RemoteTemplateServiceProvider extends ViewServiceProvider
     /**
      * Create a new Factory Instance.
      *
-     * @param EngineResolver $resolver
+     * @param EngineResolver      $resolver
      * @param ViewFinderInterface $finder
-     * @param Dispatcher $events
+     * @param Dispatcher          $events
      */
     protected function createFactory($resolver, $finder, $events): Factory
     {

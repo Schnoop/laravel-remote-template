@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Schnoop\RemoteTemplate\Tests;
 
@@ -62,11 +64,11 @@ class FeatureTest extends TestCase
     protected function addWebRoutes(Router $router): void
     {
         $router->get('web/200', [
-            'as' => 'web.200',
+            'as'   => 'web.200',
             'uses' => fn () => view('200'),
         ]);
         $router->get('web/404', [
-            'as' => 'web.404',
+            'as'   => 'web.404',
             'uses' => fn () => view('404'),
         ]);
     }
